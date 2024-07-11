@@ -56,11 +56,11 @@ const toRetrieveNumber = (newString) => {
 };
 toRetrieveNumber();
 
-// console.log(toRetrieveNumber('2023 год'));
-// console.log(toRetrieveNumber('ECMAScript 2022'));
-// console.log(toRetrieveNumber('1 кефир, 0.5 батона'));
-// console.log(toRetrieveNumber('агент 007'));
-// console.log(toRetrieveNumber('а я томат'));
-// console.log(toRetrieveNumber(2023));
-// console.log(toRetrieveNumber(-1));
-// console.log(toRetrieveNumber(1.5));
+console.log(toRetrieveNumber('2023 год'));
+console.log(toRetrieveNumber('ECMAScript 2022'));
+console.log(toRetrieveNumber('1 кефир, 0.5 батона'));
+console.log(toRetrieveNumber('агент 007'));
+console.log(toRetrieveNumber('а я томат'));
+console.log(toRetrieveNumber(2023));
+console.log(toRetrieveNumber(-1));
+console.log(Math.trunc(toRetrieveNumber(1.5)));
