@@ -3,24 +3,21 @@ const isLengthValid = (str, maxLength) => str.length <= maxLength;
 isLengthValid('helloy', 6);
 
 const isPolindrome = (str) => {
-  str = String(str).toUpperCase().replaceAll(' ', '');
+  const normilizedStr = String(str).toLowerCase().replaceAll(' ', '');
   let reverseStr = '';
 
-  for(let i = str.length - 1; i >= 0; i--) {
-    reverseStr += str[i];
-
-    if (str[i] !== str[str.length - i - 1]){
-      return false;
-    }
+  for(let i = normilizedStr.length - 1; i >= 0; i--) {
+    reverseStr += normilizedStr[i];
   }
 
-  return str === reverseStr;
+  return normilizedStr === reverseStr;
 };
-isPolindrome();
+isPolindrome('А роза упала на лапу Азора');
 
-const toRetrieveNumber = (str) => {
-  str = String(str).replaceAll(/\D+/g, '');
 
-  return parseInt(str, 10);
+const getRetrieveNumber = (str) => {
+  const formattedStr = String(str).replaceAll(/\D+/g, '');
+
+  return parseInt(formattedStr, 10);
 };
-toRetrieveNumber();
+getRetrieveNumber('Next year - 2025!!!');
