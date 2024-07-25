@@ -1,19 +1,13 @@
 
-const isLengthValid = (str, maxLength) => str.length <= maxLength;
-isLengthValid('helloy', 6);
+const isStrLengthValid = (str, maxLength) => str.length <= maxLength;
+isStrLengthValid('helloy', 6);
 
-const isPolindrome = (str) => {
-  const normilizedStr = String(str).toLowerCase().replaceAll(' ', '');
-  let reverseStr = '';
+const isPolindrome = (str)=> {
+  const normilizedStr = String(str).toLowerCase().replaceAll(/\s|[,.!?"/-]/g, '');
 
-  for(let i = normilizedStr.length - 1; i >= 0; i--) {
-    reverseStr += normilizedStr[i];
-  }
-
-  return normilizedStr === reverseStr;
+  return normilizedStr === normilizedStr.split('').reverse().join('');
 };
-isPolindrome('А роза упала на лапу Азора');
-
+isPolindrome('121 А роза упала на лапу Азора 121');
 
 const getRetrieveNumber = (str) => {
   const formattedStr = String(str).replaceAll(/\D+/g, '');
