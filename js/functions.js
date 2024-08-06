@@ -5,11 +5,14 @@ isStrLengthValid('helloy', 6);
 const isPolindrome = (str)=> {
   const normilizedStr = String(str).toLowerCase().replaceAll(' ', '');
 
-  for(let i = normilizedStr.length - 1; i >= 0; i--) {
-    ++normilizedStr[i];
+  for(let i = 0; i < normilizedStr.length / 2; i++) {
+
+    if (normilizedStr[i] !== normilizedStr[normilizedStr.length - i - 1]){
+      return false;
+    }
   }
 
-  return normilizedStr === normilizedStr.split('').reverse().join('');
+  return true;
 };
 isPolindrome('121 А роза упала на лапу Азора 121');
 
