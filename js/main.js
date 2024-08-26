@@ -1,34 +1,16 @@
-//25 сгенерированных объектов. Каждый объект массива — описание фотографии, опубликованной пользователем.
-const SIMILAR_PHOTO_USER_COUNT = 25;
+const MAX_PHOTOS = 25;
+const MIN_COMMENTS = 0;
+const MAX_COMMENTS = 30;
+const MIN_NUMBER_PHOTO = 1;
+const MAX_NUMBER_PHOTO = 25;
+const MIN_NUMBER_LIKES = 15;
+const MAX_NUMBER_LIKES = 200;
+const MIN_NUMBER_AVATARS = 1;
+const MAX_NUMBER_AVATARS = 6;
+const MIN_ID_COMMENTS = 1;
+const MAX_ID_COMMENTS = 999;
 
-// id, число — идентификатор опубликованной фотографии. Это число от 1 до 25. Идентификаторы не должны повторяться.
-const idPublishedPhoto = [];
-
-const getRandomId = (min, max) => {
-  const number = Math.floor(min + Math.random() * (max - min));
-
-  if (idPublishedPhoto.includes(number)) {
-    return getRandomId(min, max);
-  } else {
-    idPublishedPhoto.push(number);
-    return number;
-  }
-};
-// url, строка — адрес картинки. Адреса картинок не должны повторяться.
-const urlPublishedPhoto = [];
-
-const getRandomUrl = (min, max) => {
-  const number = Math.floor(min + Math.random() * (max - min));
-
-  if (urlPublishedPhoto.includes(number)) {
-    return getRandomUrl(min, max);
-  } else {
-    urlPublishedPhoto.push(number);
-    return number;
-  }
-};
-// description, строка — описание фотографии. Описание придумайте самостоятельно.
-const PHOTO_DESCRIPTION = [
+const PHOTOS_DESCRIPTION = [
   'фото замка',
   'фото лужайки перед замком',
   'фото заката на фоне замка',
@@ -55,7 +37,7 @@ const PHOTO_DESCRIPTION = [
   'картина хозяина замка',
   'картина хозяина замка с семьей',
 ];
-// Имена авторов также должны быть случайными. Набор имён для комментаторов составьте сами. Подставляйте случайное имя в поле name.
+
 const NAME_USERS = [
   'Артём',
   'Александр',
@@ -70,7 +52,7 @@ const NAME_USERS = [
   'Оксана',
   'Лика',
 ];
-// Для формирования текста комментария — message — вам необходимо взять одно или два случайных предложения из представленных ниже:
+
 const MESSAGE_USERS = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -79,42 +61,60 @@ const MESSAGE_USERS = [
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
-// likes, число — количество лайков, поставленных фотографии. Случайное число от 15 до 200.
 
-const getRandomInteger = (a, b) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-// comments, массив объектов — список комментариев, оставленных другими пользователями к этой фотографии. Количество комментариев к каждой фотографии — случайное число от 0 до 30. Все комментарии генерируются случайным образом.
+function createGallery (length) {
 
-// У каждого комментария есть идентификатор — id — любое число. Идентификаторы не должны повторяться.
+  const getRandomInteger = (min, max) => {
+    const lower = Math.ceil(Math.min(min, max));
+    const upper = Math.floor(Math.max(min, max));
+    const result = Math.random() * (upper - lower + 1) + lower;
+    return Math.floor(result);
+  };
 
-// Поле avatar — это строка, значение которой формируется по правилу img/avatar-{{случайное число от 1 до 6}}.svg. Аватарки подготовлены в директории img.
+  function createRandom (min, max) {
+    const previousValues = [];
 
-const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+    return function () {
 
-const createDescriptionPhotoUser = () => ({
-  id: getRandomId(1, 26),
-  pictureAddress: `photos/${getRandomUrl(1, 26)}.jpg`,
-  photoDescription: getRandomArrayElement(PHOTO_DESCRIPTION),
-  likes: getRandomInteger(15, 200),
-  comments: {
-    idComments: getRandomId(0, 999),
-    avatar: `img/avatar-${getRandomInteger(1, 6)}.svg`,
+      let currentValue = getRandomInteger(min, max);
+      if (previousValues.length >= (max - min + 1)) {
+        return null;
+      }
+
+      while (previousValues.includes(currentValue)) {
+        currentValue = getRandomInteger(min, max);
+      }
+      previousValues.push(currentValue);
+
+      return currentValue;
+    };
+  }
+  const generateIdPhotos = createRandom(MIN_NUMBER_PHOTO, MAX_NUMBER_PHOTO);
+  const generatePictureAddress = createRandom(MIN_NUMBER_PHOTO, MAX_NUMBER_PHOTO);
+  const generateLikes = createRandom(MIN_NUMBER_LIKES, MAX_NUMBER_LIKES);
+  const generatIdComments = createRandom(MIN_ID_COMMENTS, MAX_ID_COMMENTS);
+  const generatComments = createRandom(MIN_COMMENTS, MAX_COMMENTS);
+
+  const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+
+  const createComment = () => ({
+    idComments: generatIdComments(),
+    avatar: `img/avatar-${getRandomInteger(MIN_NUMBER_AVATARS, MAX_NUMBER_AVATARS)}.svg`,
     message: getRandomArrayElement(MESSAGE_USERS),
     name: getRandomArrayElement(NAME_USERS),
-  },
-});
+  });
 
-const similarPhotoUser = Array.from({length: SIMILAR_PHOTO_USER_COUNT}, createDescriptionPhotoUser);
-console.log(similarPhotoUser);
+  const createPhoto = () => ({
+    id: generateIdPhotos(),
+    pictureAddress: `photos/${generatePictureAddress()}.jpg`,
+    photoDescription: getRandomArrayElement(PHOTOS_DESCRIPTION),
+    likes: generateLikes(),
+    comments: Array.from({length: generatComments()}, createComment),
+  });
 
+  length = Array.from({length: MAX_PHOTOS}, createPhoto);
 
+  return length;
+}
 
-
-
-
-
-
+createGallery();
