@@ -62,7 +62,7 @@ const MESSAGE_USERS = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
 ];
 
-function createGallery (length) {
+const createGallery = (length) => {
 
   const getRandomInteger = (min, max) => {
     const lower = Math.ceil(Math.min(min, max));
@@ -115,6 +115,6 @@ function createGallery (length) {
   length = Array.from({length: MAX_PHOTOS}, createPhoto);
 
   return length;
-}
+};
 
 createGallery();
