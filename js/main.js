@@ -3,10 +3,9 @@ const MIN_COMMENTS = 0;
 const MAX_COMMENTS = 30;
 const MIN_NUMBER_LIKES = 15;
 const MAX_NUMBER_LIKES = 200;
-const MIN_NUMBER_AVATARS = 1;
-const MAX_NUMBER_AVATARS = 6;
-const MIN_ID_COMMENTS = 1;
-const MAX_ID_COMMENTS = 999;
+const MIN_AVATARS_ID = 1;
+const MAX_AVATARS_ID = 6;
+
 
 const PHOTO_DESCRIPTIONS = [
   'фото замка',
@@ -74,30 +73,21 @@ const getRandomInteger = (min, max) => {
 
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
-const createComment = function() {
+const createComment = (_, id) => ({
+  id: id + 1,
+  avatar: `img/avatar-${getRandomInteger(MIN_AVATARS_ID, MAX_AVATARS_ID)}.svg`,
+  message: getRandomArrayElement(MESSAGE_USERS),
+  name: getRandomArrayElement(NAME_USERS),
+});
 
-  return {
-    id: getRandomInteger(MIN_ID_COMMENTS, MAX_ID_COMMENTS),
-    avatar: `img/avatar-${getRandomInteger(MIN_NUMBER_AVATARS, MAX_NUMBER_AVATARS)}.svg`,
-    message: getRandomArrayElement(MESSAGE_USERS),
-    name: getRandomArrayElement(NAME_USERS),
-  };
-};
+const createPhoto = (_, id) => ({
+  id: id + 1,
+  url: `photos/${id + 1}.jpg`,
+  description: getRandomArrayElement(PHOTO_DESCRIPTIONS),
+  likes: getRandomInteger(MIN_NUMBER_LIKES, MAX_NUMBER_LIKES),
+  comment: Array.from({length: getRandomInteger(MIN_COMMENTS, MAX_COMMENTS)}, createComment),
+});
 
-const createPhoto = function(_, index) {
-  const photoId = index + 1;
-
-  return {
-    id: photoId,
-    url: `photos/${photoId}.jpg`,
-    description: getRandomArrayElement(PHOTO_DESCRIPTIONS),
-    likes: getRandomInteger(MIN_NUMBER_LIKES, MAX_NUMBER_LIKES),
-    comment: Array.from({length: getRandomInteger(MIN_COMMENTS, MAX_COMMENTS)}, createComment),
-  };
-};
-
-const createGallery = function() {
-  return Array.from({length: MAX_PHOTOS}, createPhoto);
-};
+const createGallery = (length) => Array.from({length: length}, createPhoto);
 
 createGallery(MAX_PHOTOS);
