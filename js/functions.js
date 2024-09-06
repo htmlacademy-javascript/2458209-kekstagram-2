@@ -22,3 +22,19 @@ const retrieveNumber = (str) => {
   return parseInt(formattedStr, 10);
 };
 retrieveNumber('Next year - 2025!!!');
+
+const convertInMinutes = (time) => {
+  const conversionTime = time.split(':').map((data) => Number(data));
+
+  return conversionTime[0] * 60 + conversionTime[1];
+};
+
+const checkTime = (startWorkingDay, endWorkingDay, beginningMeeting, time) => {
+  const startWorkingDayMinutes = convertInMinutes(startWorkingDay);
+  const endWorkingDayMinutes = convertInMinutes(endWorkingDay);
+  const beginningMeetingMinutes = convertInMinutes(beginningMeeting);
+
+  return startWorkingDayMinutes <= beginningMeetingMinutes && (beginningMeetingMinutes + time) <= endWorkingDayMinutes;
+};
+
+checkTime('08:30', '18:30', '17:00', 91);
