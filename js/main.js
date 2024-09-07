@@ -1,3 +1,1 @@
-import {createGallery} from './data-gallery.js';
-
-console.log(createGallery(25));
+import './gallery.js';
