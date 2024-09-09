@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArrayElement} from './util.js';
+import {getRandomInteger, getRandomArrayElement} from './utils.js';
 
 const MAX_PHOTOS = 25;
 const MIN_COMMENTS = 0;
