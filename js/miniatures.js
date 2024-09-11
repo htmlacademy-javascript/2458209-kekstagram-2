@@ -3,7 +3,7 @@ import {getRandomInteger} from './utils.js';
 
 const MIN_QUANTITY_PHOTOS = 1;
 const MAX_QUANTITY_PHOTOS = 25;
-const MAX_VISABLE = 12;
+const MAX_VISABLE = 12; //не уверен, что эти переменные нужны, но не понял как сделать лучше.//
 
 const section = document.querySelector('.pictures');
 const templateFregment = document.querySelector('#picture').content.querySelector('.picture');
@@ -15,7 +15,7 @@ function createPhotos() {
     const photoSample = templateFregment.cloneNode(true);
 
     const image = photoSample.querySelector('.picture__img');
-    image.src = `photos/${getRandomInteger(MIN_QUANTITY_PHOTOS, MAX_QUANTITY_PHOTOS)}.jpg`;
+    image.src = `photos/${getRandomInteger(MIN_QUANTITY_PHOTOS, MAX_QUANTITY_PHOTOS)}.jpg`; //подскажи пожалуйста! Как тут лучше сделать не пойму?//
     image.alt = createPhoto().description;
 
     const likes = photoSample.querySelector('.picture__likes');
