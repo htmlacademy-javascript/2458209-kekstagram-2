@@ -72,7 +72,7 @@ const createComment = (id) => ({
   name: getRandomArrayElement(NAME_USERS),
 });
 
-const createPhoto = (id) => ({
+export const createPhoto = (id) => ({
   id,
   url: `photos/${id}.jpg`,
   description: getRandomArrayElement(PHOTO_DESCRIPTIONS),
