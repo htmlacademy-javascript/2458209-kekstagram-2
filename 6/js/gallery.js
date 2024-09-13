@@ -1,5 +1,8 @@
 import {getRandomInteger, getRandomArrayElement} from './utils.js';
 
+const section = document.querySelector('.pictures');
+const templateFregment = document.querySelector('#picture').content.querySelector('.picture');
+
 const MAX_PHOTOS = 25;
 const MIN_COMMENTS = 0;
 const MAX_COMMENTS = 30;
@@ -72,7 +75,7 @@ const createComment = (id) => ({
   name: getRandomArrayElement(NAME_USERS),
 });
 
-export const createPhoto = (id) => ({
+const createPhoto = (id) => ({
   id,
   url: `photos/${id}.jpg`,
   description: getRandomArrayElement(PHOTO_DESCRIPTIONS),
@@ -82,4 +85,28 @@ export const createPhoto = (id) => ({
 
 export const createGallery = (length) => Array.from({length: length}, (_, index) => createPhoto(index + 1));
 
-createGallery(MAX_PHOTOS);
+const renderGallery = () => {
+  const fragment = document.createDocumentFragment();
+
+  createGallery(MAX_PHOTOS).forEach((element) => {
+    const photoSample = templateFregment.cloneNode(true);
+
+    const image = photoSample.querySelector('.picture__img');
+    image.src = element.url;
+    image.alt = element.description;
+
+    const likes = photoSample.querySelector('.picture__likes');
+    likes.textContent = element.likes;
+
+    const comments = photoSample.querySelector('.picture__comments');
+    comments.textContent = element.comment.length;
+
+    fragment.append(photoSample);
+  });
+
+  section.append(fragment);
+};
+
+const createPictureEl = () => renderGallery();
+
+createPictureEl();
