@@ -1,6 +1,5 @@
 import {getRandomInteger, getRandomArrayElement} from './utils.js';
 
-
 const MAX_PHOTOS = 25;
 const MIN_COMMENTS = 0;
 const MAX_COMMENTS = 30;
@@ -8,7 +7,6 @@ const MIN_NUMBER_LIKES = 15;
 const MAX_NUMBER_LIKES = 200;
 const MIN_AVATARS_ID = 1;
 const MAX_AVATARS_ID = 6;
-
 
 const PHOTO_DESCRIPTIONS = [
   'фото замка',
@@ -87,16 +85,13 @@ const gallery = createGallery(MAX_PHOTOS);
 
 const section = document.querySelector('.pictures');
 const templateFregment = document.querySelector('#picture').content.querySelector('.picture');
-const fragment = document.createDocumentFragment();
+
 
 const createPictureEl = (photo) => {
   const photoSample = templateFregment.cloneNode(true);
-
   const image = photoSample.querySelector('.picture__img');
-
   image.src = photo.url;
   image.alt = photo.description;
-
   photoSample.querySelector('.picture__likes').textContent = photo.likes;
   photoSample.querySelector('.picture__comments').textContent = photo.comment.length;
 
@@ -104,6 +99,8 @@ const createPictureEl = (photo) => {
 };
 
 export const renderGallery = () => {
+  const fragment = document.createDocumentFragment();
+
   gallery.forEach((photo) => {
     const photoSample = createPictureEl(photo);
     fragment.append(photoSample);
