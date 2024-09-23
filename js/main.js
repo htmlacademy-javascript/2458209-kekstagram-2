@@ -1,3 +1,1 @@
-import {renderGallery} from './gallery.js';
-
-renderGallery();
+import './big-picture.js';
