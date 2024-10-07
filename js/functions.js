@@ -23,18 +23,17 @@ const retrieveNumber = (str) => {
 };
 retrieveNumber('Next year - 2025!!!');
 
-const convertInMinutes = (time) => {
+const convertTimeToMinutes = (time) => {
   const conversionTime = time.split(':').map((data) => Number(data));
 
   return conversionTime[0] * 60 + conversionTime[1];
 };
 
-const checkTime = (startWorkingDay, endWorkingDay, beginningMeeting, time) => {
-  const startWorkingDayMinutes = convertInMinutes(startWorkingDay);
-  const endWorkingDayMinutes = convertInMinutes(endWorkingDay);
-  const beginningMeetingMinutes = convertInMinutes(beginningMeeting);
+const isMeetingTimeValid = (workingDayStart, workingDayEnd, meetingStart, time) => {
+  const startWorkingDayMinutes = convertTimeToMinutes(workingDayStart);
+  const endWorkingDayMinutes = convertTimeToMinutes(workingDayEnd);
+  const beginningMeetingMinutes = convertTimeToMinutes(meetingStart);
 
   return startWorkingDayMinutes <= beginningMeetingMinutes && (beginningMeetingMinutes + time) <= endWorkingDayMinutes;
 };
-
-checkTime('08:30', '18:30', '17:00', 91);
+isMeetingTimeValid('08:30', '18:30', '17:00', 91);
