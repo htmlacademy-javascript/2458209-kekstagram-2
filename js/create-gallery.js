@@ -80,6 +80,4 @@ export const createPhoto = (id) => ({
 });
 
 const createGallery = (length) => Array.from({length: length}, (_, index) => createPhoto(index + 1));
-
 export const gallery = createGallery(MAX_PHOTOS);
-
