@@ -47,7 +47,6 @@ bigPictureCancel.addEventListener('click', () => {
 export const openBigPicture = (pictureId) => {
   const currentPhoto = gallery.find((photo) => photo.id === Number(pictureId));
   const socialCommentsFragment = document.createDocumentFragment();
-
   bigPictureImg.src = currentPhoto.url;
   likesCounter.textContent = currentPhoto.likes;
   commentSocial.innerHTML = '';
@@ -58,7 +57,6 @@ export const openBigPicture = (pictureId) => {
     socialComments.querySelector('.social_picture').src = comments.avatar;
     socialComments.querySelector('.social_picture').alt = comments.name;
     socialComments.querySelector('.social_text').textContent = comments.message;
-
     socialCommentsFragment.append(socialComments);
   });
 
@@ -66,7 +64,6 @@ export const openBigPicture = (pictureId) => {
   comentDescription.textContent = currentPhoto.description;
   commentCount.classList('hidden');
   commentLoad.classList('hidden');
-
   sectionBigPicture.classList.remove('hidden');
   bigPictureCancel.addEventListener('click',onBigPictureCancel);
   document.body.classList.add('modal-open');
