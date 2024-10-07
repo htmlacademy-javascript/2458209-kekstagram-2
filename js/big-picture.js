@@ -26,13 +26,11 @@ const onPhotoEscKeydown = (evt) => {
 
 function openPhoto () {
   sectionBigPicture.classList.remove('hidden');
-
   document.addEventListener('keydown', onPhotoEscKeydown);
 }
 
 function closePhoto () {
   sectionBigPicture.classList.add('hidden');
-
   document.removeEventListener('keydown', onPhotoEscKeydown);
 }
 
