@@ -34,7 +34,7 @@ const isMeetingTimeValid = (workingDayStart, workingDayEnd, meetingStart, time) 
   const endWorkingDayMinutes = convertTimeToMinutes(workingDayEnd);
   const beginningMeetingMinutes = convertTimeToMinutes(meetingStart);
 
+
   return startWorkingDayMinutes <= beginningMeetingMinutes && (beginningMeetingMinutes + time) <= endWorkingDayMinutes;
 };
-
 isMeetingTimeValid('08:30', '18:30', '17:00', 91);
