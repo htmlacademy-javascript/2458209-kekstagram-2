@@ -7,9 +7,27 @@ const likesCounter = sectionBigPicture.querySelector('.likes-count');
 const commentSocial = sectionBigPicture.querySelector('.social__comments');
 const commentSocialTemplate = commentSocial.querySelector('.social__comment');
 const comentDescription = sectionBigPicture.querySelector('.social__caption');
-const commentCount = sectionBigPicture.querySelector('.social__comment-count');
-const commentLoad = sectionBigPicture.querySelector('.comments-loader');
 const bigPictureCancel = sectionBigPicture.querySelector('.big-picture__cancel');
+const socialCommentsFragment = document.createDocumentFragment();
+
+const createComments = (comment) => {
+  const socialComments = commentSocialTemplate.cloneNode(true);
+
+  socialComments.querySelector('.social__picture').src = comment.avatar;
+  socialComments.querySelector('.social__picture').alt = comment.name;
+  socialComments.querySelector('.social__text').textContent = comment.message;
+  socialCommentsFragment.append(socialComments);
+};
+
+const renderComments = (comments) => {
+
+  comments.forEach((comment) => {
+    const createComment = createComments(comment);
+    socialCommentsFragment.append(createComment);
+  });
+
+  commentSocial.append(socialCommentsFragment);
+};
 
 const onBigPictureCancel = (evt) => {
   evt.preventDefault();
@@ -40,24 +58,14 @@ bigPictureCancel.addEventListener('click', () => {
 
 export const openBigPicture = (pictureId) => {
   const currentPhoto = gallery.find((photo) => photo.id === Number(pictureId));
-  const socialCommentsFragment = document.createDocumentFragment();
   bigPictureImg.src = currentPhoto.url;
   likesCounter.textContent = currentPhoto.likes;
   commentSocial.innerHTML = '';
 
-  currentPhoto.comment.forEach((comments) => {
-    const socialComments = commentSocialTemplate.cloneNode(true);
-
-    socialComments.querySelector('.social__picture').src = comments.avatar;
-    socialComments.querySelector('.social__picture').alt = comments.name;
-    socialComments.querySelector('.social__text').textContent = comments.message;
-    socialCommentsFragment.append(socialComments);
-  });
+  renderComments();
 
   commentSocial.append(socialCommentsFragment);
   comentDescription.textContent = currentPhoto.description;
-  commentCount.classList.add('hidden');
-  commentLoad.classList.add('hidden');
   sectionBigPicture.classList.remove('hidden');
   bigPictureCancel.addEventListener('click',onBigPictureCancel);
   document.body.classList.add('modal-open');

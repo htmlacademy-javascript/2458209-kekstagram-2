@@ -20,14 +20,15 @@ export const createPhoto = (id) => ({
 const createGallery = (length) => Array.from({length: length}, (_, index) => createPhoto(index + 1));
 export const gallery = createGallery(MAX_PHOTOS);
 
-export const pictureSection = document.querySelector('.pictures');
+const pictureSection = document.querySelector('.pictures');
 const templateFragmentPhotos = document.querySelector('#picture').content.querySelector('.picture');
 const fragment = document.createDocumentFragment();
 
 const createPictureEl = (photo) => {
   const photoSample = templateFragmentPhotos.cloneNode(true);
-  photoSample.dataset.pictureId = photo.id;
   const image = photoSample.querySelector('.picture__img');
+
+  photoSample.dataset.pictureId = photo.id;
   image.src = photo.url;
   image.alt = photo.description;
   photoSample.querySelector('.picture__likes').textContent = photo.likes;
