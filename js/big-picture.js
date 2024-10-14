@@ -62,5 +62,3 @@ export const openBigPicture = (pictureId) => {
   bigPictureCancel.addEventListener('click',onBigPictureCancel);
   document.body.classList.add('modal-open');
 };
-
-
