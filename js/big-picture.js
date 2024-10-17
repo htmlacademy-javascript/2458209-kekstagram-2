@@ -1,53 +1,38 @@
 import {isEscapeKey} from './utils.js';
-import {gallery} from './gallery.js';
+import DATA from './data.js';
 
 const sectionBigPicture = document.querySelector('.big-picture');
 const bigPictureImg = sectionBigPicture.querySelector('.big-picture__img').querySelector('img');
 const likesCounter = sectionBigPicture.querySelector('.likes-count');
+const bigPictureCancel = sectionBigPicture.querySelector('.big-picture__cancel');
 const commentSocial = sectionBigPicture.querySelector('.social__comments');
 const commentSocialTemplate = commentSocial.querySelector('.social__comment');
 const comentDescription = sectionBigPicture.querySelector('.social__caption');
-const bigPictureCancel = sectionBigPicture.querySelector('.big-picture__cancel');
-const socialCommentsFragment = document.createDocumentFragment();
+const commentTotalCounter = document.querySelector('.social__comment-total-count');
 
-const createComments = (comment) => {
-  const socialComments = commentSocialTemplate.cloneNode(true);
+let comments;
 
-  socialComments.querySelector('.social__picture').src = comment.avatar;
-  socialComments.querySelector('.social__picture').alt = comment.name;
-  socialComments.querySelector('.social__text').textContent = comment.message;
-  socialCommentsFragment.append(socialComments);
-};
-
-const renderComments = (comments) => {
-
-  comments.forEach((comment) => {
-    const createComment = createComments(comment);
-    socialCommentsFragment.append(createComment);
-  });
-
-  commentSocial.append(socialCommentsFragment);
-};
-
-const onBigPictureCancel = (evt) => {
-  evt.preventDefault();
-  closePhoto();
+const onBigPictureCancel = () => {
+  if (isEscapeKey) {
+    closePhoto();
+  }
 };
 
 const onPhotoEscKeydown = (evt) => {
-  if (isEscapeKey()) {
+  if (isEscapeKey(evt)) {
     evt.preventDefault();
     closePhoto();
   }
 };
 
-export const openPhoto = () => {
+const showModal = () => {
   sectionBigPicture.classList.remove('hidden');
-  document.addEventListener('keydown', onPhotoEscKeydown);
+  document.body.classList.add('modal-open');
 };
 
 function closePhoto () {
   sectionBigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
   bigPictureCancel.removeEventListener('click', onBigPictureCancel);
   document.removeEventListener('keydown', onPhotoEscKeydown);
 }
@@ -56,17 +41,43 @@ bigPictureCancel.addEventListener('click', () => {
   closePhoto();
 });
 
-export const openBigPicture = (pictureId) => {
-  const currentPhoto = gallery.find((photo) => photo.id === Number(pictureId));
+const renderComment = (comment) => {
+  const socialComment = commentSocialTemplate.cloneNode(true);
+
+  socialComment.querySelector('.social__picture').src = comment.avatar;
+  socialComment.querySelector('.social__picture').alt = comment.name;
+  socialComment.querySelector('.social__text').textContent = comment.message;
+
+  return socialComment;
+};
+
+const renderComments = () => {
+  const socialCommentsFragment = document.createDocumentFragment();
+
+  comments.splice(0, DATA.MAX_COMMENTS).forEach((item) => {
+    socialCommentsFragment.append(renderComment(item));
+  });
+
+  commentSocial.appendChild(socialCommentsFragment);
+};
+
+const renderModal = (currentPhoto) => {
   bigPictureImg.src = currentPhoto.url;
   likesCounter.textContent = currentPhoto.likes;
-  commentSocial.innerHTML = '';
+  comentDescription.textContent = currentPhoto.description;
 
   renderComments();
+};
 
-  commentSocial.append(socialCommentsFragment);
-  comentDescription.textContent = currentPhoto.description;
-  sectionBigPicture.classList.remove('hidden');
-  bigPictureCancel.addEventListener('click',onBigPictureCancel);
-  document.body.classList.add('modal-open');
+export const openBigPicture = (currentPhoto) => {
+  showModal();
+
+  comments = [...currentPhoto.comment];
+  commentSocial.innerHTML = '';
+  commentTotalCounter.textContent = currentPhoto.comment;
+
+  renderModal(currentPhoto);
+
+  bigPictureCancel.addEventListener('click', closePhoto);
+  document.addEventListener('keydown', onPhotoEscKeydown);
 };

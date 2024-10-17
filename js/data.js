@@ -1,10 +1,13 @@
-export const MAX_PHOTOS = 25;
-export const MIN_COMMENTS = 0;
-export const MAX_COMMENTS = 30;
-export const MIN_NUMBER_LIKES = 15;
-export const MAX_NUMBER_LIKES = 200;
-export const MIN_AVATARS_ID = 1;
-export const MAX_AVATARS_ID = 6;
+const DATA = {
+  MAX_PHOTOS: 25,
+  MIN_COMMENTS: 0,
+  MAX_COMMENTS: 30,
+  MIN_NUMBER_LIKES: 15,
+  MAX_NUMBER_LIKES: 200,
+  MIN_AVATARS_ID: 1,
+  MAX_AVATARS_ID: 6
+};
+export default DATA;
 
 export const PHOTO_DESCRIPTIONS = [
   'Фото гостиницы со стороны пляжа',
