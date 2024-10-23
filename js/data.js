@@ -5,6 +5,7 @@ export const MIN_NUMBER_LIKES = 15;
 export const MAX_NUMBER_LIKES = 200;
 export const MIN_AVATARS_ID = 1;
 export const MAX_AVATARS_ID = 6;
+export const MAX_COMMENT_LENGTH = 140;
 
 export const PHOTO_DESCRIPTIONS = [
   'Фото гостиницы со стороны пляжа',

@@ -1,6 +1,5 @@
 import * as DATA from './data.js';
 
-const objectData = Object.create(DATA);
 const sectionBigPicture = document.querySelector('.big-picture');
 const bigPictureImg = sectionBigPicture.querySelector('.big-picture__img').querySelector('img');
 const likesCounter = sectionBigPicture.querySelector('.likes-count');
@@ -9,7 +8,7 @@ const commentSocial = sectionBigPicture.querySelector('.social__comments');
 const commentSocialTemplate = commentSocial.querySelector('.social__comment');
 const comentDescription = sectionBigPicture.querySelector('.social__caption');
 const commentTotalCounter = document.querySelector('.social__comment-total-count');
-const counterComments = 0;
+const commentCounter = 0;
 
 let comments = [];
 
@@ -52,7 +51,7 @@ const createComment = (comment) => {
 const renderComments = () => {
   const socialCommentsFragment = document.createDocumentFragment();
 
-  comments.splice(counterComments, objectData.MAX_COMMENTS).forEach((item) => {
+  comments.splice(commentCounter, DATA.MAX_COMMENTS).forEach((item) => {
     socialCommentsFragment.append(createComment(item));
   });
 
