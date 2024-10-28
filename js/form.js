@@ -72,9 +72,9 @@ const isCountHashtags = (data) => data.split(' ').length <= maxHashtag;
 
 const isUniqHashtags = (data) => (new Set(data.split(' '))).size === data.split(' ').length;
 
-const isAllValidatorhashtags = (data) => isValidHashtags(data) && isCountHashtags(data) && isUniqHashtags(data);
+const isAllValidatorHashtags = (data) => isValidHashtags(data) && isCountHashtags(data) && isUniqHashtags(data);
 
-pristine.addValidator(textHashtags, isAllValidatorhashtags, errHashtagMessage);
+pristine.addValidator(textHashtags, isAllValidatorHashtags, errHashtagMessage);
 
 uploadForm.addEventListener('submit', onSubmitForm);
 uploadFile.addEventListener('change', onResetBtnOpenChange);
