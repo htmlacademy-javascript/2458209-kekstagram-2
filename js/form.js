@@ -1,10 +1,8 @@
-import {isEscapeKey} from './utils';
-
-const isRegularHashtagValid = /^#[a-zа-яё0-9]{1,19}$/i;
-const isMaxHashtag = 5;
-const isMaxLengthComment = 140;
-const isErrCommentMessage = 'Длина комментария не более 140 символов';
-const isErrHashtagMessage = 'Хэштег введен не правильно';
+const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_HASHTAG = 5;
+const MAX_LENGTH_COMMENT = 140;
+const ERR_COMMENT_MESSAGE = 'Длина комментария не более 140 символов';
+const ERR_HASHTAG_MESSAGE = 'Хэштег введен не правильно';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadForm.querySelector('.img-upload__input');
@@ -17,16 +15,11 @@ const onResetBtnCloseClick = () => closeModalForm();
 
 const isActiveElement = () => document.activeElement === textHashtags || document.activeElement === textComment;
 
-const onFormEscapeDown = (evt) => {
-  if (isEscapeKey(evt)) {
+const onFormKeyDown = (evt) => {
+  if (evt.key === 'Escape') {
     evt.preventDefault();
 
-    if (isActiveElement()) {
-      evt.preventDefault();
-    } else {
-      uploadForm.reset();
-      closeModalForm();
-    }
+    return isActiveElement() ? evt.preventDefault() : closeModalForm();
   }
 };
 
@@ -34,7 +27,7 @@ const showModalForm = () => {
   document.body.classList.add('modal-open');
   uploadOverlay.classList.remove('hidden');
   resetBtn.addEventListener('click', onResetBtnCloseClick);
-  document.addEventListener('keydown', onFormEscapeDown);
+  document.addEventListener('keydown', onFormKeyDown);
 };
 
 const onResetBtnOpenChange = () => showModalForm();
@@ -43,7 +36,7 @@ function closeModalForm () {
   document.body.classList.remove('modal-open');
   uploadOverlay.classList.add('hidden');
   resetBtn.removeEventListener('click', onResetBtnCloseClick);
-  document.removeEventListener('keydown', onFormEscapeDown);
+  document.removeEventListener('keydown', onFormKeyDown);
 }
 
 const pristine = new Pristine(uploadForm, {
@@ -56,29 +49,27 @@ const onSubmitForm = (evt) => {
   evt.preventDefault();
 
   if (pristine.validate()) {
-    // uploadForm.submit();
+    // uploadForm.submit(); сюда будет что-то вставлено!!!!!!(не забыть удалить)
   }
 };
 
-const isCommentLengthValid = (data) => data.length <= isMaxLengthComment;
+const isCommentLengthValid = (data) => data.length <= MAX_LENGTH_COMMENT;
 
-pristine.addValidator(textComment, isCommentLengthValid, isErrCommentMessage);
+pristine.addValidator(textComment, isCommentLengthValid, ERR_COMMENT_MESSAGE);
 
-const hashtagValue = textHashtags.value = textHashtags.value.trim().replaceAll(/\s+/g, ' ');
+const isHashtagsValid = (data) => !data ? true : data.every((tag) => REGULAR_HASHTAG_VALID.test(tag));
 
-const isHashtagsValid = (data) => !data ? !hashtagValue : data.trim().split(' ').every((tag) => isRegularHashtagValid.test(tag));
+const isHashtagsCountValid = (data) => data.length <= MAX_HASHTAG;
 
-const isHashtagsCountValid = (data) => data.split(' ').length <= isMaxHashtag;
-
-const isHashtagsUnique = (data) => (new Set(data.split(' '))).size === data.split(' ').length;
+const isHashtagsUnique = (data) => (new Set(data)).size === data.length;
 
 const isHashtagsValidatorsValid = () => {
-  const pureTags = textHashtags.value = textHashtags.value.replaceAll(/\s+/g, ' ').toLowerCase();
+  const pureTags = textHashtags.value.trim().replaceAll(/\s+/g, ' ').toLowerCase().split(' ');
 
   return isHashtagsValid(pureTags) && isHashtagsCountValid(pureTags) && isHashtagsUnique(pureTags);
 };
 
-pristine.addValidator(textHashtags, isHashtagsValidatorsValid, isErrHashtagMessage);
+pristine.addValidator(textHashtags, isHashtagsValidatorsValid, ERR_HASHTAG_MESSAGE);
 
 uploadForm.addEventListener('submit', onSubmitForm);
 uploadFile.addEventListener('change', onResetBtnOpenChange);
