@@ -1,3 +1,7 @@
+import './control-form-scale.js';
+import {initializationSliderEffect, resetSliderEffect} from './control-form-effects.js';
+import {isEscapeKey} from './utils.js';
+
 const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG = 5;
 const MAX_LENGTH_COMMENT = 140;
@@ -16,10 +20,8 @@ const onResetBtnCloseClick = () => closeModalForm();
 const isActiveElement = () => document.activeElement === textHashtags || document.activeElement === textComment;
 
 const onFormKeyDown = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-
-    return isActiveElement() ? evt.preventDefault() : closeModalForm();
+  if (isEscapeKey(evt.key) && !isActiveElement()) {
+    closeModalForm();
   }
 };
 
@@ -28,6 +30,8 @@ const showModalForm = () => {
   uploadOverlay.classList.remove('hidden');
   resetBtn.addEventListener('click', onResetBtnCloseClick);
   document.addEventListener('keydown', onFormKeyDown);
+
+  initializationSliderEffect();
 };
 
 const onResetBtnOpenChange = () => showModalForm();
@@ -35,8 +39,11 @@ const onResetBtnOpenChange = () => showModalForm();
 function closeModalForm () {
   document.body.classList.remove('modal-open');
   uploadOverlay.classList.add('hidden');
+  uploadFile.value = '';
   resetBtn.removeEventListener('click', onResetBtnCloseClick);
   document.removeEventListener('keydown', onFormKeyDown);
+
+  resetSliderEffect();
 }
 
 const pristine = new Pristine(uploadForm, {
