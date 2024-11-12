@@ -1,5 +1,5 @@
-const EFFECTS_LIST = [
-  {
+const EFFECTS_LIST = {
+  default: {
     name: 'none',
     style: 'none',
     min: 0,
@@ -7,7 +7,7 @@ const EFFECTS_LIST = [
     step: 1,
     unit: ''
   },
-  {
+  chrome: {
     name: 'chrome',
     style: 'grayscale',
     min: 0,
@@ -15,7 +15,7 @@ const EFFECTS_LIST = [
     step: 0.1,
     unit: ''
   },
-  {
+  sepia: {
     name: 'sepia',
     style: 'sepia',
     min: 0,
@@ -23,7 +23,7 @@ const EFFECTS_LIST = [
     step: 0.1,
     unit: ''
   },
-  {
+  marvin: {
     name: 'marvin',
     style: 'invert',
     min: 0,
@@ -31,7 +31,7 @@ const EFFECTS_LIST = [
     step: 1,
     unit: '%'
   },
-  {
+  phobos: {
     name: 'phobos',
     style: 'blur',
     min: 0,
@@ -39,15 +39,15 @@ const EFFECTS_LIST = [
     step: 0.1,
     unit: 'px'
   },
-  {
+  heat: {
     name: 'heat',
     style: 'brightness',
     min: 1,
     max: 3,
     step: 0.1,
     unit: ''
-  },
-];
+  }
+};
 
 const uploadEffect = document.querySelector('.img-upload__effect-level');
 const slider = document.querySelector('.effect-level__slider');
@@ -55,26 +55,29 @@ const uploadPreviewImg = document.querySelector('.img-upload__preview img');
 const effectValue = document.querySelector('.effect-level__value');
 const effectsList = document.querySelector('.effects__list');
 
-const defaultEffectElement = EFFECTS_LIST[0];
-let activeEffectElement = defaultEffectElement;
+const DEFAULT_EFFECT_SETTING = EFFECTS_LIST.default;
 
-export const restartSliderEffect = () => {
+let activeEffectElement = DEFAULT_EFFECT_SETTING;
+
+const isEqualityEffect = () => activeEffectElement === DEFAULT_EFFECT_SETTING;
+
+export const initializationSliderEffect = () => {
   noUiSlider.create(slider, {
     range: {
-      min: defaultEffectElement.min,
-      max: defaultEffectElement.max,
+      min: DEFAULT_EFFECT_SETTING.min,
+      max: DEFAULT_EFFECT_SETTING.max,
     },
-    start: defaultEffectElement.max,
-    step: defaultEffectElement.step,
+    start: DEFAULT_EFFECT_SETTING.max,
+    step: DEFAULT_EFFECT_SETTING.step,
   });
 
-  effectsList.addEventListener('change', onEffectsSliderChange);
+  effectsList.addEventListener('change', onSliderChange);
   slider.noUiSlider.on('update',onSliderUpdate);
   uploadEffect.classList.add('hidden');
 };
 
-const updateSlider = (data) => {
-  data.noUiSlider.updateOptions({
+const updateSlider = () => {
+  slider.noUiSlider.updateOptions({
     range: {
       min: activeEffectElement.min,
       max: activeEffectElement.max,
@@ -82,24 +85,25 @@ const updateSlider = (data) => {
     step: activeEffectElement.step,
     start: activeEffectElement.max,
   });
-
-  return activeEffectElement === defaultEffectElement ? uploadEffect.classList.add('hidden') : uploadEffect.classList.remove('hidden');
 };
 
-function onEffectsSliderChange (evt) {
-  activeEffectElement = EFFECTS_LIST.find((effect) => effect.name === evt.target.value);
+function onSliderChange (evt) {
+  activeEffectElement = Object.values(EFFECTS_LIST).find((effect) => effect.name === evt.target.value);
   uploadPreviewImg.className = `effects__preview--${activeEffectElement.name}`;
-  updateSlider(slider);
+
+  updateSlider();
+
+  return isEqualityEffect() ? uploadEffect.classList.add('hidden') : uploadEffect.classList.remove('hidden');
 }
 
 export const resetSliderEffect = () => {
-  activeEffectElement = defaultEffectElement;
-  effectsList.removeEventListener('change', onEffectsSliderChange);
+  activeEffectElement = DEFAULT_EFFECT_SETTING;
+  effectsList.removeEventListener('change', onSliderChange);
   slider.noUiSlider.destroy();
 };
 
 function onSliderUpdate () {
   const sliderValue = slider.noUiSlider.get();
-  uploadPreviewImg.style.filter = activeEffectElement === defaultEffectElement ? defaultEffectElement.style : `${activeEffectElement.style}(${sliderValue}${activeEffectElement.unit})`;
+  uploadPreviewImg.style.filter = isEqualityEffect() ? DEFAULT_EFFECT_SETTING.style : `${activeEffectElement.style}(${sliderValue}${activeEffectElement.unit})`;
   effectValue.value = sliderValue;
 }

@@ -1,30 +1,24 @@
-const STEP = 0.25;
+const STEP = 25;
+const MIN_SCALE = 25;
+const MAX_SCALE = 100;
 
 const controlSmallerElementbtn = document.querySelector('.scale__control--smaller');
 const controlBiggerElementbtn = document.querySelector('.scale__control--bigger');
 const controlValueElementInput = document.querySelector('.scale__control--value');
 const uploadPreviewElementImg = document.querySelector('.img-upload__preview img');
 
-let scale = 1;
-
-const showScaleSmaller = () => {
-  if (scale > STEP && scale <= 1) {
-    uploadPreviewElementImg.style.transform = `scale(${scale -= STEP})`;
-    controlValueElementInput.value = `${scale * 100}%`;
-  }
+const tranformScaleElement = (data) => {
+  uploadPreviewElementImg.style.transform = `scale(${data / MAX_SCALE})`;
+  controlValueElementInput.value = `${data}%`;
 };
 
-const showScaleBigger = () => {
-  if (scale >= STEP && scale < 1) {
-    uploadPreviewElementImg.style.transform = `scale(${scale += STEP})`;
-    controlValueElementInput.value = `${scale * 100}%`;
-  }
+const onScaleClickUp = () => {
+  tranformScaleElement(Math.min(parseInt(controlValueElementInput.value, 10) + STEP, MAX_SCALE));
 };
 
-const onScaleSmallerClick = () => showScaleSmaller();
+const onScaleClickDown = () => {
+  tranformScaleElement(Math.max(parseInt(controlValueElementInput.value, 10) - STEP, MIN_SCALE));
+};
 
-const onScaleBiggerClick = () => showScaleBigger();
-
-controlSmallerElementbtn.addEventListener('click', onScaleSmallerClick);
-
-controlBiggerElementbtn.addEventListener('click', onScaleBiggerClick);
+controlBiggerElementbtn.addEventListener('click', onScaleClickUp);
+controlSmallerElementbtn.addEventListener('click', onScaleClickDown);
