@@ -1,5 +1,5 @@
 import './control-form-scale.js';
-import {restartSliderEffect, resetSliderEffect} from './control-form-slaider.js';
+import {initializationSliderEffect, resetSliderEffect} from './control-form-effects.js';
 import {isEscapeKey} from './utils.js';
 
 const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
@@ -20,7 +20,7 @@ const onResetBtnCloseClick = () => closeModalForm();
 const isActiveElement = () => document.activeElement === textHashtags || document.activeElement === textComment;
 
 const onFormKeyDown = (evt) => {
-  if (isEscapeKey(evt) && !isActiveElement()) {
+  if (isEscapeKey(evt.key) && !isActiveElement()) {
     closeModalForm();
   }
 };
@@ -31,7 +31,7 @@ const showModalForm = () => {
   resetBtn.addEventListener('click', onResetBtnCloseClick);
   document.addEventListener('keydown', onFormKeyDown);
 
-  restartSliderEffect();
+  initializationSliderEffect();
 };
 
 const onResetBtnOpenChange = () => showModalForm();
