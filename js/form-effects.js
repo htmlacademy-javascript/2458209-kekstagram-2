@@ -57,11 +57,11 @@ const effectsList = document.querySelector('.effects__list');
 
 const DEFAULT_EFFECT_SETTING = EFFECTS_LIST.default;
 
-let activeEffectElement = DEFAULT_EFFECT_SETTING;
+let activeEffectFilter = DEFAULT_EFFECT_SETTING;
 
-const isEqualityEffect = () => activeEffectElement === DEFAULT_EFFECT_SETTING;
+const isDefaultEffect = () => activeEffectFilter === DEFAULT_EFFECT_SETTING;
 
-export const initializationSliderEffect = () => {
+export const initializationSlider = () => {
   noUiSlider.create(slider, {
     range: {
       min: DEFAULT_EFFECT_SETTING.min,
@@ -73,37 +73,42 @@ export const initializationSliderEffect = () => {
 
   effectsList.addEventListener('change', onSliderChange);
   slider.noUiSlider.on('update',onSliderUpdate);
-  uploadEffect.classList.add('hidden');
 };
 
 const updateSlider = () => {
   slider.noUiSlider.updateOptions({
     range: {
-      min: activeEffectElement.min,
-      max: activeEffectElement.max,
+      min: activeEffectFilter.min,
+      max: activeEffectFilter.max,
     },
-    step: activeEffectElement.step,
-    start: activeEffectElement.max,
+    step: activeEffectFilter.step,
+    start: activeEffectFilter.max,
   });
 };
 
 function onSliderChange (evt) {
-  activeEffectElement = Object.values(EFFECTS_LIST).find((effect) => effect.name === evt.target.value);
-  uploadPreviewImg.className = `effects__preview--${activeEffectElement.name}`;
+  const effect = evt.target.value;
+  activeEffectFilter = EFFECTS_LIST[effect] ?? EFFECTS_LIST.default;
+  uploadPreviewImg.className = `effects__preview--${activeEffectFilter.name}`;
+
 
   updateSlider();
 
-  return isEqualityEffect() ? uploadEffect.classList.add('hidden') : uploadEffect.classList.remove('hidden');
+  if (isDefaultEffect()) {
+    uploadEffect.classList.add('hidden');
+  } else {
+    uploadEffect.classList.remove('hidden');
+  }
 }
 
-export const resetSliderEffect = () => {
-  activeEffectElement = DEFAULT_EFFECT_SETTING;
+export const resetEffect = () => {
+  activeEffectFilter = DEFAULT_EFFECT_SETTING;
   effectsList.removeEventListener('change', onSliderChange);
   slider.noUiSlider.destroy();
 };
 
 function onSliderUpdate () {
   const sliderValue = slider.noUiSlider.get();
-  uploadPreviewImg.style.filter = isEqualityEffect() ? DEFAULT_EFFECT_SETTING.style : `${activeEffectElement.style}(${sliderValue}${activeEffectElement.unit})`;
-  effectValue.value = sliderValue;
+  uploadPreviewImg.style.filter = isDefaultEffect() ? DEFAULT_EFFECT_SETTING.style : `${activeEffectFilter.style}(${sliderValue}${activeEffectFilter.unit})`;
+  effectValue.value = sliderValue ;
 }

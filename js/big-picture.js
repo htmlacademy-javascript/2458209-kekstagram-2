@@ -19,6 +19,7 @@ const onBigPictureCancel = () => {
 
 const onPhotoKeydown = (evt) => {
   if (isEscapeKey(evt.key)) {
+    evt.preventDefault();
     closePhoto();
   }
 };
