@@ -1,4 +1,5 @@
 import * as DATA from './data.js';
+import {isEscapeKey} from './utils.js';
 
 const sectionBigPicture = document.querySelector('.big-picture');
 const bigPictureImg = sectionBigPicture.querySelector('.big-picture__img').querySelector('img');
@@ -16,8 +17,9 @@ const onBigPictureCancel = () => {
   closePhoto();
 };
 
-const onPhotoEscKeydown = (evt) => {
-  if (evt.key === 'Escape') {
+const onPhotoKeydown = (evt) => {
+  if (isEscapeKey(evt.key)) {
+    evt.preventDefault();
     closePhoto();
   }
 };
@@ -31,7 +33,7 @@ function closePhoto () {
   sectionBigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
   bigPictureCancel.removeEventListener('click', onBigPictureCancel);
-  document.removeEventListener('keydown', onPhotoEscKeydown);
+  document.removeEventListener('keydown', onPhotoKeydown);
 }
 
 bigPictureCancel.addEventListener('click', () => {
@@ -71,5 +73,5 @@ export const openBigPicture = (photoData) => {
   renderComments();
 
   bigPictureCancel.addEventListener('click', onBigPictureCancel);
-  document.addEventListener('keydown', onPhotoEscKeydown);
+  document.addEventListener('keydown', onPhotoKeydown);
 };
