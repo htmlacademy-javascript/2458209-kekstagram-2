@@ -1,5 +1,5 @@
-import './control-form-scale.js';
-import {initializationSliderEffect, resetSliderEffect} from './control-form-effects.js';
+import './form-scale.js';
+import {initializationSlider, resetEffect} from './form-effects.js';
 import {isEscapeKey} from './utils.js';
 
 const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
@@ -21,6 +21,7 @@ const isActiveElement = () => document.activeElement === textHashtags || documen
 
 const onFormKeyDown = (evt) => {
   if (isEscapeKey(evt.key) && !isActiveElement()) {
+    evt.preventDefault();
     closeModalForm();
   }
 };
@@ -31,7 +32,7 @@ const showModalForm = () => {
   resetBtn.addEventListener('click', onResetBtnCloseClick);
   document.addEventListener('keydown', onFormKeyDown);
 
-  initializationSliderEffect();
+  initializationSlider();
 };
 
 const onResetBtnOpenChange = () => showModalForm();
@@ -43,7 +44,7 @@ function closeModalForm () {
   resetBtn.removeEventListener('click', onResetBtnCloseClick);
   document.removeEventListener('keydown', onFormKeyDown);
 
-  resetSliderEffect();
+  resetEffect();
 }
 
 const pristine = new Pristine(uploadForm, {
