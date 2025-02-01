@@ -1,6 +1,4 @@
-const STEP = 25;
-const MIN_SCALE = 25;
-const MAX_SCALE = 100;
+import { STEP, MIN_SCALE, MAX_SCALE } from './constants.js';
 
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
 const scaleControlBigger = document.querySelector('.scale__control--bigger');

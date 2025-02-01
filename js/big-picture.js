@@ -1,5 +1,5 @@
-import * as DATA from './data.js';
-import {isEscapeKey} from './utils.js';
+import { MAX_COMMENTS } from './constants.js';
+import { isEscapeKey } from './utils.js';
 
 const sectionBigPicture = document.querySelector('.big-picture');
 const bigPictureImg = sectionBigPicture.querySelector('.big-picture__img').querySelector('img');
@@ -13,9 +13,7 @@ const commentCounter = 0;
 
 let comments = [];
 
-const onBigPictureCancel = () => {
-  closePhoto();
-};
+const onBigPictureCancel = () => closePhoto();
 
 const onPhotoKeydown = (evt) => {
   if (isEscapeKey(evt.key)) {
@@ -36,9 +34,7 @@ function closePhoto () {
   document.removeEventListener('keydown', onPhotoKeydown);
 }
 
-bigPictureCancel.addEventListener('click', () => {
-  closePhoto();
-});
+bigPictureCancel.addEventListener('click', () => closePhoto());
 
 const createComment = (comment) => {
   const socialComment = commentSocialTemplate.cloneNode(true);
@@ -53,7 +49,7 @@ const createComment = (comment) => {
 const renderComments = () => {
   const socialCommentsFragment = document.createDocumentFragment();
 
-  comments.splice(commentCounter, DATA.MAX_COMMENTS).forEach((item) => {
+  comments.splice(commentCounter, MAX_COMMENTS).forEach((item) => {
     socialCommentsFragment.append(createComment(item));
   });
 
@@ -63,7 +59,7 @@ const renderComments = () => {
 export const openBigPicture = (photoData) => {
   showModal();
 
-  comments = [...photoData.comment];
+  comments = [...photoData.comments];
   commentSocial.innerHTML = '';
   commentTotalCounter.textContent = photoData.comment;
   bigPictureImg.src = photoData.url;

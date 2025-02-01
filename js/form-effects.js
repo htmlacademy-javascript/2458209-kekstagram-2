@@ -1,61 +1,10 @@
-const EFFECTS_LIST = {
-  default: {
-    name: 'none',
-    style: 'none',
-    min: 0,
-    max: 100,
-    step: 1,
-    unit: ''
-  },
-  chrome: {
-    name: 'chrome',
-    style: 'grayscale',
-    min: 0,
-    max: 1,
-    step: 0.1,
-    unit: ''
-  },
-  sepia: {
-    name: 'sepia',
-    style: 'sepia',
-    min: 0,
-    max: 1,
-    step: 0.1,
-    unit: ''
-  },
-  marvin: {
-    name: 'marvin',
-    style: 'invert',
-    min: 0,
-    max: 100,
-    step: 1,
-    unit: '%'
-  },
-  phobos: {
-    name: 'phobos',
-    style: 'blur',
-    min: 0,
-    max: 3,
-    step: 0.1,
-    unit: 'px'
-  },
-  heat: {
-    name: 'heat',
-    style: 'brightness',
-    min: 1,
-    max: 3,
-    step: 0.1,
-    unit: ''
-  }
-};
+import { EFFECTS, DEFAULT_EFFECT_SETTING } from './constants.js';
 
 const uploadEffect = document.querySelector('.img-upload__effect-level');
 const slider = document.querySelector('.effect-level__slider');
 const uploadPreviewImg = document.querySelector('.img-upload__preview img');
 const effectValue = document.querySelector('.effect-level__value');
 const effectsList = document.querySelector('.effects__list');
-
-const DEFAULT_EFFECT_SETTING = EFFECTS_LIST.default;
 
 let activeEffectFilter = DEFAULT_EFFECT_SETTING;
 
@@ -86,11 +35,10 @@ const updateSlider = () => {
   });
 };
 
-function onSliderChange (evt) {
+function onSliderChange(evt) {
   const effect = evt.target.value;
-  activeEffectFilter = EFFECTS_LIST[effect] ?? EFFECTS_LIST.default;
+  activeEffectFilter = EFFECTS[effect] ?? EFFECTS.default;
   uploadPreviewImg.className = `effects__preview--${activeEffectFilter.name}`;
-
 
   updateSlider();
 

@@ -1,12 +1,9 @@
 import './form-scale.js';
-import {initializationSlider, resetEffect} from './form-effects.js';
-import {isEscapeKey} from './utils.js';
-
-const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
-const MAX_HASHTAG = 5;
-const MAX_LENGTH_COMMENT = 140;
-const ERR_COMMENT_MESSAGE = 'Длина комментария не более 140 символов';
-const ERR_HASHTAG_MESSAGE = 'Хэштег введен не правильно';
+import { REGULAR_HASHTAG_VALID, MAX_HASHTAG, MAX_LENGTH_COMMENT, ERR_COMMENT_MESSAGE, ERR_HASHTAG_MESSAGE, SUBMIT_BUTTON_TEXT } from './constants.js';
+import { initializationSlider, resetEffect } from './form-effects.js';
+import { isEscapeKey} from './utils.js';
+import { sendData } from './api.js';
+import { showSuccessMessage, showErrorMessage } from './show-message.js';
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadForm.querySelector('.img-upload__input');
@@ -14,6 +11,7 @@ const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
 const resetBtn = uploadForm.querySelector('.img-upload__cancel');
 const textHashtags = uploadForm.querySelector('.text__hashtags');
 const textComment = uploadForm.querySelector('.text__description');
+const submitButton = document.querySelector('.img-upload__submit');
 
 const onResetBtnCloseClick = () => closeModalForm();
 
@@ -47,6 +45,16 @@ function closeModalForm () {
   resetEffect();
 }
 
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = SUBMIT_BUTTON_TEXT.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = SUBMIT_BUTTON_TEXT.IDLE;
+};
+
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__form',
   errorTextParent: 'img-upload__field-wrapper',
@@ -56,8 +64,24 @@ const pristine = new Pristine(uploadForm, {
 const onSubmitForm = (evt) => {
   evt.preventDefault();
 
-  if (pristine.validate()) {
-    // uploadForm.submit(); сюда будет что-то вставлено!!!!!!(не забыть удалить)
+  const isValid = pristine.validate();
+  const formData = new FormData(evt.target);
+
+  if (isValid) {
+    blockSubmitButton();
+    sendData(formData)
+      .then(() => {
+        closeModalForm();
+        showSuccessMessage();
+        uploadForm.reset();
+      })
+      .catch(() => {
+        showErrorMessage();
+      })
+      .finally(() => {
+        unblockSubmitButton();
+
+      });
   }
 };
 

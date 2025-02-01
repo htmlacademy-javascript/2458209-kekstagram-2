@@ -1,4 +1,3 @@
-
 const isStrLengthValid = (str, maxLength) => str.length <= maxLength;
 isStrLengthValid('helloy', 6);
 
