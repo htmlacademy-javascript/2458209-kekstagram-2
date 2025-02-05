@@ -1,10 +1,10 @@
 import { isEscapeKey } from './utils.js';
-import { ALERT_SHOW_TIME } from './constants.js';
+const ALERT_SHOW_TIME = 5000;
 
 const dataError = document.querySelector('#data-error').content.querySelector('.data-error');
-const messageSuccess = document.querySelector('#success').content.querySelector('.success');
-const messageError = document.querySelector('#error').content.querySelector('.error');
-const body = document.querySelector('body');
+const successDialog = document.querySelector('#success').content.querySelector('.success');
+const errorDialog = document.querySelector('#error').content.querySelector('.error');
+const body = document.body;
 
 export const showAlert = (errorMessage) => {
   const dataErrorElement = dataError.cloneNode(true);
@@ -12,7 +12,7 @@ export const showAlert = (errorMessage) => {
   if (errorMessage) {
     dataErrorElement.querySelector('.data-error__title').textContent = errorMessage;
   }
-  document.body.append(dataErrorElement);
+  body.append(dataErrorElement);
 
   setTimeout(() => {
     dataErrorElement.remove();
@@ -26,17 +26,17 @@ const onBodyClick = (evt) => {
   if (message) {
     return;
   }
-  hideMessage();
+  closeDialog();
 };
 
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt.key)) {
     evt.preventDefault();
-    hideMessage();
+    closeDialog();
   }
 };
 
-function hideMessage() {
+function closeDialog() {
   const messageElem = document.querySelector('.success') || document.querySelector('.error');
 
   messageElem.remove();
@@ -44,13 +44,19 @@ function hideMessage() {
   body.removeEventListener('click', onBodyClick);
 }
 
-const showMessage = (messageElement, closeBtnClass) => {
-  body.append(messageElement);
-  document.addEventListener('keydown', onDocumentKeydown);
-  body.addEventListener('click', onBodyClick);
+const showDialog = (template) => {
+  const message = template.cloneNode(true);
+  body.append(message);
 
-  messageElement.querySelector(closeBtnClass).addEventListener('click', hideMessage);
+  const dialog = document.querySelector('[data-message]');
+
+  if (dialog.target) {
+    closeDialog();
+  }
+
+  body.addEventListener('click', onBodyClick);
+  document.addEventListener('keydown', onDocumentKeydown, true);
 };
 
-export const showSuccessMessage = () => showMessage(messageSuccess, '.success__button');
-export const showErrorMessage = () => showMessage(messageError, '.error__button');
+export const showSuccessDialog = () => showDialog(successDialog, '.success__button');
+export const showErrorDialog = () => showDialog(errorDialog, '.error__button');

@@ -16,18 +16,7 @@ const createPictureEl = (photo) => {
   return photoSample;
 };
 
-export const renderGallery = (photos) => {
-  const fragment = document.createDocumentFragment();
-
-  photos.forEach((photo) => {
-    const photoSample = createPictureEl(photo);
-    fragment.append(photoSample);
-  });
-
-  pictureSection.append(fragment);
-};
-
-export const openGallery = (gallery) => {
+const openGallery = (gallery) => {
   pictureSection.addEventListener('click', (evt) => {
     const element = evt.target.closest('.picture[data-picture-id]');
 
@@ -43,3 +32,15 @@ export const openGallery = (gallery) => {
   });
 };
 
+export const renderGallery = (photos) => {
+  const fragment = document.createDocumentFragment();
+
+  photos.forEach((photo) => {
+    const photoSample = createPictureEl(photo);
+    fragment.append(photoSample);
+  });
+
+  pictureSection.append(fragment);
+
+  openGallery(photos);
+};
