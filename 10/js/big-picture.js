@@ -1,5 +1,6 @@
-import { MAX_COMMENTS } from './constants.js';
 import { isEscapeKey } from './utils.js';
+
+const MAX_COMMENTS = 30;
 
 const sectionBigPicture = document.querySelector('.big-picture');
 const bigPictureImg = sectionBigPicture.querySelector('.big-picture__img').querySelector('img');

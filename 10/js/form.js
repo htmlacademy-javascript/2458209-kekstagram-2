@@ -1,9 +1,18 @@
 import './form-scale.js';
-import { REGULAR_HASHTAG_VALID, MAX_HASHTAG, MAX_LENGTH_COMMENT, ERR_COMMENT_MESSAGE, ERR_HASHTAG_MESSAGE, SUBMIT_BUTTON_TEXT } from './constants.js';
 import { initializationSlider, resetEffect } from './form-effects.js';
 import { isEscapeKey} from './utils.js';
 import { sendData } from './api.js';
-import { showSuccessMessage, showErrorMessage } from './show-message.js';
+import { showSuccessDialog, showErrorDialog } from './dialogs.js';
+
+const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
+const MAX_HASHTAG = 5;
+const MAX_LENGTH_COMMENT = 140;
+const ERR_COMMENT_MESSAGE = 'Длина комментария не более 140 символов';
+const ERR_HASHTAG_MESSAGE = 'Хэштег введен не правильно';
+const SUBMIT_BUTTON_TEXT = {
+  IDLE:'Опубликовать',
+  SENDING: 'Публикую...'
+};
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadForm.querySelector('.img-upload__input');
@@ -43,6 +52,7 @@ function closeModalForm () {
   document.removeEventListener('keydown', onFormKeyDown);
 
   resetEffect();
+  uploadForm.reset();
 }
 
 const blockSubmitButton = () => {
@@ -65,22 +75,21 @@ const onSubmitForm = (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();
-  const formData = new FormData(evt.target);
 
   if (isValid) {
+    const formData = new FormData(evt.target);
+
     blockSubmitButton();
     sendData(formData)
       .then(() => {
         closeModalForm();
-        showSuccessMessage();
-        uploadForm.reset();
+        showSuccessDialog();
       })
       .catch(() => {
-        showErrorMessage();
+        showErrorDialog();
       })
       .finally(() => {
         unblockSubmitButton();
-
       });
   }
 };
