@@ -58,5 +58,5 @@ const showDialog = (template) => {
   document.addEventListener('keydown', onDocumentKeydown, true);
 };
 
-export const showSuccessDialog = () => showDialog(successDialog, '.success__button');
-export const showErrorDialog = () => showDialog(errorDialog, '.error__button');
+export const showSuccessDialog = () => showDialog(successDialog);
+export const showErrorDialog = () => showDialog(errorDialog);
