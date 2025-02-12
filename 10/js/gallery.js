@@ -1,4 +1,4 @@
-import {openBigPicture} from './big-picture.js';
+import { openBigPicture } from './big-picture';
 
 const pictureSection = document.querySelector('.pictures');
 const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
@@ -16,22 +16,6 @@ const createPictureEl = (photo) => {
   return photoSample;
 };
 
-const openGallery = (gallery) => {
-  pictureSection.addEventListener('click', (evt) => {
-    const element = evt.target.closest('.picture[data-picture-id]');
-
-    if (!element) {
-      return;
-    }
-
-    const data = gallery.find((photo) => photo.id === Number(element.dataset.pictureId));
-
-    if (data) {
-      openBigPicture(data);
-    }
-  });
-};
-
 export const renderGallery = (photos) => {
   const fragment = document.createDocumentFragment();
 
@@ -41,6 +25,14 @@ export const renderGallery = (photos) => {
   });
 
   pictureSection.append(fragment);
+};
 
-  openGallery(photos);
+export const initPhotoClickHandlers = (picturesDataList) => {
+  pictureSection.addEventListener('click', (evt) => {
+    const currentPicture = evt.target.closest('.picture[data-picture-id]');
+
+    if (currentPicture) {
+      openBigPicture(currentPicture.dataset.pictureId, picturesDataList);
+    }
+  });
 };

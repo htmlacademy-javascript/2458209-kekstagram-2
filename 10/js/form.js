@@ -55,14 +55,9 @@ function closeModalForm () {
   uploadForm.reset();
 }
 
-const blockSubmitButton = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = SUBMIT_BUTTON_TEXT.SENDING;
-};
-
-const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = SUBMIT_BUTTON_TEXT.IDLE;
+const blockSubmitButton = (boolean, textContent) => {
+  submitButton.disabled = boolean;
+  submitButton.textContent = textContent;
 };
 
 const pristine = new Pristine(uploadForm, {
@@ -79,7 +74,7 @@ const onSubmitForm = (evt) => {
   if (isValid) {
     const formData = new FormData(evt.target);
 
-    blockSubmitButton();
+    blockSubmitButton(true, SUBMIT_BUTTON_TEXT.SENDING);
     sendData(formData)
       .then(() => {
         closeModalForm();
@@ -89,7 +84,7 @@ const onSubmitForm = (evt) => {
         showErrorDialog();
       })
       .finally(() => {
-        unblockSubmitButton();
+        blockSubmitButton(false, SUBMIT_BUTTON_TEXT.IDLE);
       });
   }
 };
