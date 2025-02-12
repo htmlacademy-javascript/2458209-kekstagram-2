@@ -22,9 +22,8 @@ const onBodyClick = (evt) => {
   const message = evt.target.closest('[data-backdrop]');
 
   if (message) {
-    return;
+    closeDialog();
   }
-  closeDialog();
 };
 
 const onDocumentKeydown = (evt) => {

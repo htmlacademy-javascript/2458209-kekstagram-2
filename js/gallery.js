@@ -27,16 +27,12 @@ export const renderGallery = (photos) => {
   pictureSection.append(fragment);
 };
 
-export const initGallery = (picturesDataList) => {
+export const initPhotoClickHandlers = (picturesDataList) => {
   pictureSection.addEventListener('click', (evt) => {
-    const element = evt.target.closest('.picture[data-picture-id]');
+    const currentPicture = evt.target.closest('.picture[data-picture-id]');
 
-    if (!element) {
-      return;
-    }
-
-    if (element) {
-      openBigPicture(element.dataset.pictureId, picturesDataList);
+    if (currentPicture) {
+      openBigPicture(currentPicture.dataset.pictureId, picturesDataList);
     }
   });
 };
