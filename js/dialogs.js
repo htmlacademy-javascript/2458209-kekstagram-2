@@ -3,15 +3,19 @@ import { isEscapeKey } from './utils.js';
 const ALERT_SHOW_TIME = 5000;
 
 const dataError = document.querySelector('#data-error').content.querySelector('.data-error');
-const successDialog = document.querySelector('#success').content.querySelector('[data-message]');
-const errorDialog = document.querySelector('#error').content.querySelector('[data-message]');
+const successDialog = document.querySelector('#success').content.querySelector('[data-overlay]');
+const errorDialog = document.querySelector('#error').content.querySelector('[data-overlay]');
 const body = document.body;
 
 let currentDialog;
 
-export const showAlert = (errorMessage = '') => {
+export const showAlert = (errorMessage = 'Данные не загружены') => {
   const errorElement = dataError.cloneNode(true);
-  errorElement.querySelector('.data-error__title').textContent = errorMessage;
+
+  if (errorMessage) {
+    errorElement.querySelector('.data-error__title').textContent = errorMessage;
+  }
+
   body.append(errorElement);
 
   setTimeout(() => {
@@ -19,10 +23,10 @@ export const showAlert = (errorMessage = '') => {
   }, ALERT_SHOW_TIME);
 };
 
-const onBodyClick = (evt) => {
-  const message = evt.target.closest('[data-message]') || evt.target.closest('button[type="button"]');
+const onDocumentClick = (evt) => {
+  const dialog = evt.target.closest('[data-overlay]') || evt.target.closest('button[type="button"]');
 
-  if (message) {
+  if (dialog) {
     closeDialog();
   }
 };
@@ -40,7 +44,7 @@ function closeDialog() {
   }
 
   document.removeEventListener('keydown', onDocumentKeydown, true);
-  document.removeEventListener('click', onBodyClick);
+  document.removeEventListener('click', onDocumentClick);
   currentDialog.remove();
   currentDialog = null;
 }
@@ -50,7 +54,7 @@ const showDialog = (template) => {
 
   body.append(currentDialog);
 
-  document.addEventListener('click', onBodyClick);
+  document.addEventListener('click', onDocumentClick);
   document.addEventListener('keydown', onDocumentKeydown, true);
 };
 

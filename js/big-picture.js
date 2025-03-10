@@ -14,7 +14,7 @@ const socialCommentCount = document.querySelector('.social__comment-count');
 const commentTotalCounter = document.querySelector('.social__comment-total-count');
 const commentsLoader = document.querySelector('.comments-loader');
 
-let shownComments = 0;
+let currentComment = 0;
 let comments = [];
 
 const createComment = ({avatar, name, message}) => {
@@ -27,10 +27,10 @@ const createComment = ({avatar, name, message}) => {
   return comment;
 };
 
-const onCommentsLoadClick = () => {
+const renderComments = () => {
   const commentsFragment = document.createDocumentFragment();
-  const renderedComments = comments.slice(shownComments, shownComments + COMMENTS_STEP);
-  const renderedCommentsLength = renderedComments.length + shownComments;
+  const renderedComments = comments.slice(currentComment, currentComment + COMMENTS_STEP);
+  const renderedCommentsLength = renderedComments.length + currentComment;
 
   renderedComments.forEach ((commentData) => {
     const comment = createComment(commentData);
@@ -39,25 +39,24 @@ const onCommentsLoadClick = () => {
 
   commentsList.append(commentsFragment);
 
-  socialCommentCount.textContent = shownComments;
-  commentTotalCounter.textContent = comments.length;
+  socialCommentCount.textContent = currentComment;
 
   if (renderedCommentsLength >= comments.length) {
     commentsLoader.classList.add('hidden');
   }
 
-  shownComments += COMMENTS_STEP;
+  currentComment = Math.max(currentComment + COMMENTS_STEP, currentComment);
 };
 
-const renderComments = (currentPhotoComments) => {
+const onCommentsLoadClick = () => renderComments();
+
+const showComments = (currentPhotoComments) => {
   comments = currentPhotoComments;
   onCommentsLoadClick();
-
-  commentsLoader.addEventListener('click', onCommentsLoadClick);
 };
 
 const clearComments = () => {
-  shownComments = 0;
+  currentComment = 0;
 
   commentsLoader.classList.remove('hidden');
   commentsLoader.removeEventListener('click', onCommentsLoadClick);
@@ -96,11 +95,16 @@ export const openBigPicture = (pictureId, picturesDataList) => {
   bigPictureImg.src = currentPhoto.url;
   likesCounter.textContent = currentPhoto.likes;
   commentShownCount.textContent = currentPhoto.comments.length;
+  commentTotalCounter.textContent = comments.length;
   comentDescription.textContent = currentPhoto.description;
   commentsList.innerHTML = '';
 
-  renderComments(currentPhoto.comments);
+  showComments(currentPhoto.comments);
 
   document.addEventListener('keydown', onPhotoKeydown);
   bigPictureCancel.addEventListener('click', onBigPictureCancel);
+
+  if (comments.length > COMMENTS_STEP) {
+    commentsLoader.addEventListener('click', onCommentsLoadClick);
+  }
 };
