@@ -3,6 +3,8 @@ import { openBigPicture } from './big-picture';
 const pictureSection = document.querySelector('.pictures');
 const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
+let userPhotos = [];
+
 const createPictureEl = (photo) => {
   const photoSample = photoTemplate.cloneNode(true);
   const image = photoSample.querySelector('.picture__img');
@@ -16,7 +18,7 @@ const createPictureEl = (photo) => {
   return photoSample;
 };
 
-export const renderGallery = (photos) => {
+const renderGallery = (photos) => {
   const fragment = document.createDocumentFragment();
 
   photos.forEach((photo) => {
@@ -27,12 +29,18 @@ export const renderGallery = (photos) => {
   pictureSection.append(fragment);
 };
 
-export const initPhotoClickHandlers = (picturesDataList) => {
-  pictureSection.addEventListener('click', (evt) => {
-    const currentPicture = evt.target.closest('.picture[data-picture-id]');
+export const initGallery = (photos) => {
+  userPhotos = photos;
 
-    if (currentPicture) {
-      openBigPicture(currentPicture.dataset.pictureId, picturesDataList);
-    }
-  });
+  renderGallery(photos);
 };
+
+
+pictureSection.addEventListener('click', (evt) => {
+  const currentPicture = evt.target.closest('.picture[data-picture-id]');
+
+  if (currentPicture) {
+    openBigPicture(currentPicture.dataset.pictureId, userPhotos);
+  }
+});
+
