@@ -1,12 +1,18 @@
 import './form-scale.js';
-import {initializationSlider, resetEffect} from './form-effects.js';
-import {isEscapeKey} from './utils.js';
+import { initializationSlider, resetEffect } from './form-effects.js';
+import { isEscapeKey} from './utils.js';
+import { sendData } from './api.js';
+import { showSuccessDialog, showErrorDialog } from './dialogs.js';
 
 const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG = 5;
 const MAX_LENGTH_COMMENT = 140;
 const ERR_COMMENT_MESSAGE = 'Длина комментария не более 140 символов';
 const ERR_HASHTAG_MESSAGE = 'Хэштег введен не правильно';
+const SUBMIT_BUTTON_TEXT = {
+  IDLE:'Опубликовать',
+  SENDING: 'Публикую...'
+};
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadForm.querySelector('.img-upload__input');
@@ -14,6 +20,7 @@ const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
 const resetBtn = uploadForm.querySelector('.img-upload__cancel');
 const textHashtags = uploadForm.querySelector('.text__hashtags');
 const textComment = uploadForm.querySelector('.text__description');
+const submitButton = document.querySelector('.img-upload__submit');
 
 const onResetBtnCloseClick = () => closeModalForm();
 
@@ -45,7 +52,12 @@ function closeModalForm () {
   document.removeEventListener('keydown', onFormKeyDown);
 
   resetEffect();
+  uploadForm.reset();
 }
+
+const toggleSubmitButton = (disabled) => {
+  submitButton.disabled = disabled ? submitButton.textContent = SUBMIT_BUTTON_TEXT.SENDING : submitButton.textContent = SUBMIT_BUTTON_TEXT.IDLE;
+};
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__form',
@@ -56,8 +68,23 @@ const pristine = new Pristine(uploadForm, {
 const onSubmitForm = (evt) => {
   evt.preventDefault();
 
-  if (pristine.validate()) {
-    // uploadForm.submit(); сюда будет что-то вставлено!!!!!!(не забыть удалить)
+  const isValid = pristine.validate();
+
+  if (isValid) {
+    const formData = new FormData(evt.target);
+
+    toggleSubmitButton(true);
+    sendData(formData)
+      .then(() => {
+        closeModalForm();
+        showSuccessDialog();
+      })
+      .catch(() => {
+        showErrorDialog();
+      })
+      .finally(() => {
+        toggleSubmitButton(false);
+      });
   }
 };
 

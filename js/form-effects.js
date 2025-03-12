@@ -1,4 +1,4 @@
-const EFFECTS_LIST = {
+const EFFECTS = {
   default: {
     name: 'none',
     style: 'none',
@@ -48,14 +48,13 @@ const EFFECTS_LIST = {
     unit: ''
   }
 };
+const DEFAULT_EFFECT_SETTING = EFFECTS.default;
 
 const uploadEffect = document.querySelector('.img-upload__effect-level');
 const slider = document.querySelector('.effect-level__slider');
 const uploadPreviewImg = document.querySelector('.img-upload__preview img');
 const effectValue = document.querySelector('.effect-level__value');
 const effectsList = document.querySelector('.effects__list');
-
-const DEFAULT_EFFECT_SETTING = EFFECTS_LIST.default;
 
 let activeEffectFilter = DEFAULT_EFFECT_SETTING;
 
@@ -86,11 +85,10 @@ const updateSlider = () => {
   });
 };
 
-function onSliderChange (evt) {
+function onSliderChange(evt) {
   const effect = evt.target.value;
-  activeEffectFilter = EFFECTS_LIST[effect] ?? EFFECTS_LIST.default;
+  activeEffectFilter = EFFECTS[effect] ?? EFFECTS.default;
   uploadPreviewImg.className = `effects__preview--${activeEffectFilter.name}`;
-
 
   updateSlider();
 
