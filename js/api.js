@@ -11,6 +11,7 @@ const TEXT_ERROR = {
   GET_DATA: 'Не удаётся загрузить данные.',
   SEND_DATA: 'Не удаётся отправить форму'
 };
+
 const loadingData = (route, errorText, method = METHODS.GET, body = null) =>
   fetch(`${BASE_URL}${route}`, { method, body })
     .then((response) => {
