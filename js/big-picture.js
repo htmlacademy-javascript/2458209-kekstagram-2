@@ -40,25 +40,19 @@ const renderComments = () => {
   commentsList.append(commentsFragment);
 
   socialCommentCount.textContent = currentComment;
+  currentComment = Math.max(currentComment + COMMENTS_STEP, currentComment);
 
   if (renderedCommentsLength >= comments.length) {
     commentsLoader.classList.add('hidden');
   }
-
-  currentComment = Math.max(currentComment + COMMENTS_STEP, currentComment);
 };
 
 const onCommentsLoadClick = () => renderComments();
 
-const showComments = (currentPhotoComments) => {
-  comments = currentPhotoComments;
-  onCommentsLoadClick();
-};
-
 const clearComments = () => {
   currentComment = 0;
 
-  commentsLoader.classList.remove('hidden');
+  commentsLoader.classList.add('hidden');
   commentsLoader.removeEventListener('click', onCommentsLoadClick);
 };
 
@@ -92,6 +86,7 @@ export const openBigPicture = (pictureId, picturesDataList) => {
 
   const currentPhoto = picturesDataList.find((photo) => photo.id === Number(pictureId));
 
+  comments = currentPhoto.comments;
   bigPictureImg.src = currentPhoto.url;
   likesCounter.textContent = currentPhoto.likes;
   commentShownCount.textContent = currentPhoto.comments.length;
@@ -99,12 +94,13 @@ export const openBigPicture = (pictureId, picturesDataList) => {
   comentDescription.textContent = currentPhoto.description;
   commentsList.innerHTML = '';
 
-  showComments(currentPhoto.comments);
+  renderComments();
 
   document.addEventListener('keydown', onPhotoKeydown);
   bigPictureCancel.addEventListener('click', onBigPictureCancel);
 
   if (comments.length > COMMENTS_STEP) {
+    commentsLoader.classList.remove('hidden');
     commentsLoader.addEventListener('click', onCommentsLoadClick);
   }
 };
