@@ -1,7 +1,7 @@
 import { openBigPicture } from './big-picture.js';
 
 const pictureSection = document.querySelector('.pictures');
-const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
+export const photoTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 let userPhotos = [];
 
@@ -18,7 +18,11 @@ const createPictureEl = (photo) => {
   return photoSample;
 };
 
-const renderGallery = (photos) => {
+export const clearPhotos = () => pictureSection.querySelectorAll('.picture').forEach((item) => {
+  item.remove();
+});
+
+export const renderGallery = (photos) => {
   const fragment = document.createDocumentFragment();
 
   photos.forEach((photo) => {
@@ -35,6 +39,7 @@ export const initGallery = (photos) => {
   renderGallery(photos);
 };
 
+export const getUserPhotos = () => userPhotos;
 
 pictureSection.addEventListener('click', (evt) => {
   const currentPicture = evt.target.closest('.picture[data-picture-id]');
