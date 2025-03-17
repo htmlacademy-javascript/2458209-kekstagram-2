@@ -28,9 +28,12 @@ const createComment = ({avatar, name, message}) => {
 };
 
 const renderComments = () => {
-  const commentsFragment = document.createDocumentFragment();
-  const renderedComments = comments.slice(currentComment, currentComment + COMMENTS_STEP);
+  const commentsStep = currentComment + COMMENTS_STEP;
+  const renderedComments = comments.slice(currentComment, commentsStep);
   const renderedCommentsLength = renderedComments.length + currentComment;
+  currentComment = Math.max(commentsStep, currentComment);
+
+  const commentsFragment = document.createDocumentFragment();
 
   renderedComments.forEach ((commentData) => {
     const comment = createComment(commentData);
@@ -40,7 +43,6 @@ const renderComments = () => {
   commentsList.append(commentsFragment);
 
   socialCommentCount.textContent = currentComment;
-  currentComment = Math.max(currentComment + COMMENTS_STEP, currentComment);
 
   if (renderedCommentsLength >= comments.length) {
     commentsLoader.classList.add('hidden');
@@ -51,6 +53,10 @@ const onCommentsLoadClick = () => renderComments();
 
 const clearComments = () => {
   currentComment = 0;
+
+  commentsList.innerHTML = '';
+  commentTotalCounter.textContent = '';
+  commentShownCount.textContent = '';
 
   commentsLoader.classList.add('hidden');
   commentsLoader.removeEventListener('click', onCommentsLoadClick);
