@@ -1,6 +1,7 @@
 import { isEscapeKey } from './utils.js';
 
 const ALERT_SHOW_TIME = 5000;
+const ERROR_MESSAGE = 'Неизвестная ошибка';
 
 const dataError = document.querySelector('#data-error').content.querySelector('.data-error');
 const successDialog = document.querySelector('#success').content.querySelector('[data-overlay]');
@@ -9,13 +10,9 @@ const body = document.body;
 
 let currentDialog;
 
-export const showAlert = (errorMessage = 'Данные не загружены') => {
+export const showAlert = (errorMessage = ERROR_MESSAGE) => {
   const errorElement = dataError.cloneNode(true);
-
-  if (errorMessage) {
-    errorElement.querySelector('.data-error__title').textContent = errorMessage;
-  }
-
+  errorElement.querySelector('.data-error__title').textContent = errorMessage;
   body.append(errorElement);
 
   setTimeout(() => {

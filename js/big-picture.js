@@ -28,9 +28,12 @@ const createComment = ({avatar, name, message}) => {
 };
 
 const renderComments = () => {
-  const commentsFragment = document.createDocumentFragment();
-  const renderedComments = comments.slice(currentComment, currentComment + COMMENTS_STEP);
+  const commentsStep = currentComment + COMMENTS_STEP;
+  const renderedComments = comments.slice(currentComment, commentsStep);
   const renderedCommentsLength = renderedComments.length + currentComment;
+  currentComment = Math.max(commentsStep, currentComment);
+
+  const commentsFragment = document.createDocumentFragment();
 
   renderedComments.forEach ((commentData) => {
     const comment = createComment(commentData);
@@ -44,21 +47,18 @@ const renderComments = () => {
   if (renderedCommentsLength >= comments.length) {
     commentsLoader.classList.add('hidden');
   }
-
-  currentComment = Math.max(currentComment + COMMENTS_STEP, currentComment);
 };
 
 const onCommentsLoadClick = () => renderComments();
 
-const showComments = (currentPhotoComments) => {
-  comments = currentPhotoComments;
-  onCommentsLoadClick();
-};
-
 const clearComments = () => {
   currentComment = 0;
 
-  commentsLoader.classList.remove('hidden');
+  commentsList.innerHTML = '';
+  commentTotalCounter.textContent = '';
+  commentShownCount.textContent = '';
+
+  commentsLoader.classList.add('hidden');
   commentsLoader.removeEventListener('click', onCommentsLoadClick);
 };
 
@@ -92,6 +92,7 @@ export const openBigPicture = (pictureId, picturesDataList) => {
 
   const currentPhoto = picturesDataList.find((photo) => photo.id === Number(pictureId));
 
+  comments = currentPhoto.comments;
   bigPictureImg.src = currentPhoto.url;
   likesCounter.textContent = currentPhoto.likes;
   commentShownCount.textContent = currentPhoto.comments.length;
@@ -99,12 +100,13 @@ export const openBigPicture = (pictureId, picturesDataList) => {
   comentDescription.textContent = currentPhoto.description;
   commentsList.innerHTML = '';
 
-  showComments(currentPhoto.comments);
+  renderComments();
 
   document.addEventListener('keydown', onPhotoKeydown);
   bigPictureCancel.addEventListener('click', onBigPictureCancel);
 
   if (comments.length > COMMENTS_STEP) {
+    commentsLoader.classList.remove('hidden');
     commentsLoader.addEventListener('click', onCommentsLoadClick);
   }
 };

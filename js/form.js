@@ -56,7 +56,9 @@ function closeModalForm () {
 }
 
 const toggleSubmitButton = (disabled) => {
-  submitButton.disabled = disabled ? submitButton.textContent = SUBMIT_BUTTON_TEXT.SENDING : submitButton.textContent = SUBMIT_BUTTON_TEXT.IDLE;
+  submitButton.disabled = disabled;
+
+  submitButton.textContent = disabled ? SUBMIT_BUTTON_TEXT.SENDING : SUBMIT_BUTTON_TEXT.IDLE;
 };
 
 const pristine = new Pristine(uploadForm, {
