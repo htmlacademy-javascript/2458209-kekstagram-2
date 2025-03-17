@@ -2,7 +2,7 @@ import './form-scale.js';
 import { initializationSlider, resetEffect } from './form-effects.js';
 import { isEscapeKey} from './utils.js';
 import { sendData } from './api.js';
-import { showSuccessDialog, showErrorDialog } from './dialogs.js';
+import { showSuccessDialog, showErrorDialog, showAlert } from './dialogs.js';
 
 const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG = 5;
@@ -13,6 +13,8 @@ const SUBMIT_BUTTON_TEXT = {
   IDLE:'Опубликовать',
   SENDING: 'Публикую...'
 };
+const FILE_TYPES = ['jpg', 'jpeg', 'png', 'webp'];
+const FILE_NUMBERS = 0;
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadForm.querySelector('.img-upload__input');
@@ -21,6 +23,26 @@ const resetBtn = uploadForm.querySelector('.img-upload__cancel');
 const textHashtags = uploadForm.querySelector('.text__hashtags');
 const textComment = uploadForm.querySelector('.text__description');
 const submitButton = document.querySelector('.img-upload__submit');
+const imgUploadPreview = uploadForm.querySelector('.img-upload__preview img');
+const effectsPreview = uploadForm.querySelectorAll('.effects__preview');
+
+const upLoadPhotoUsers = () => {
+  const file = uploadFile.files[FILE_NUMBERS];
+  const fileName = file.name.toLowerCase();
+  const fileExt = fileName.split('.').pop();
+  const matches = FILE_TYPES.includes(fileExt);
+
+  if (matches) {
+    const newUrl = URL.createObjectURL(file);
+    imgUploadPreview.src = newUrl;
+    effectsPreview.forEach((item) => {
+      item.style.backgroundImage = `url(${newUrl})`;
+    });
+  } else {
+    showAlert();
+    closeModalForm();
+  }
+};
 
 const onResetBtnCloseClick = () => closeModalForm();
 
@@ -39,6 +61,7 @@ const showModalForm = () => {
   resetBtn.addEventListener('click', onResetBtnCloseClick);
   document.addEventListener('keydown', onFormKeyDown);
 
+  upLoadPhotoUsers();
   initializationSlider();
 };
 
