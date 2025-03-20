@@ -19,24 +19,24 @@ const randomFilter = imgFilters.querySelector('#filter-random');
 const discussedFilter = imgFilters.querySelector('#filter-discussed');
 
 let activeFilter = defaultFilter;
-let pictures = [];
 
-const getFilterPhotos = () => {
+const getFilterPhotos = (pictures) => {
   switch (activeFilter) {
     case randomFilter:
       return pictures.toSorted(SORT_FUNC.random).slice(PHOTOS_COUNT.min, PHOTOS_COUNT.max);
     case discussedFilter:
       return pictures.toSorted(SORT_FUNC.discussed);
     default:
-      return getUserPhotos();
+      return pictures;
   }
 };
 
 const selectFilter = () => {
-  pictures = getFilterPhotos();
+  const pictures = getUserPhotos();
+  const filterPhotos = getFilterPhotos(pictures);
 
   clearPhotos();
-  renderGallery(pictures);
+  renderGallery(filterPhotos);
 };
 
 const debounceFilter = debounce(selectFilter, RENDER_PHOTOS_DELAY);
@@ -56,8 +56,6 @@ const onFilterClick = (evt) => {
 };
 
 export const initFilter = () => {
-  pictures = getUserPhotos();
-
   imgFilters.classList.remove(INACTIVE_FILTER_LIST_CLASS);
   imgFilters.addEventListener('click', onFilterClick);
 };
