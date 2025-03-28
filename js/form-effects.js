@@ -36,7 +36,7 @@ const EFFECTS = {
     style: 'blur',
     min: 0,
     max: 3,
-    step: 0.1,
+    step: 0.10,
     unit: 'px'
   },
   heat: {
@@ -68,6 +68,17 @@ export const initializationSlider = () => {
     },
     start: DEFAULT_EFFECT_SETTING.max,
     step: DEFAULT_EFFECT_SETTING.step,
+    format: {
+      to: function (value) {
+        if (Number.isInteger(value)) {
+          return value.toFixed(0);
+        }
+        return value.toFixed(1);
+      },
+      from: function (value) {
+        return parseFloat(value);
+      },
+    },
   });
 
   effectsList.addEventListener('change', onSliderChange);
@@ -108,5 +119,5 @@ export const resetEffect = () => {
 function onSliderUpdate () {
   const sliderValue = slider.noUiSlider.get();
   uploadPreviewImg.style.filter = isDefaultEffect() ? DEFAULT_EFFECT_SETTING.style : `${activeEffectFilter.style}(${sliderValue}${activeEffectFilter.unit})`;
-  effectValue.value = sliderValue ;
+  effectValue.value = sliderValue;
 }

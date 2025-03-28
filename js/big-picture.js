@@ -10,12 +10,22 @@ const comentDescription = sectionBigPicture.querySelector('.social__caption');
 const bigPictureCancel = sectionBigPicture.querySelector('.big-picture__cancel');
 const commentsList = document.querySelector('.social__comments');
 const commentTemplate = commentsList.querySelector('.social__comment');
-const socialCommentCount = document.querySelector('.social__comment-count');
 const commentTotalCounter = document.querySelector('.social__comment-total-count');
 const commentsLoader = document.querySelector('.comments-loader');
 
 let currentComment = 0;
 let comments = [];
+
+const onPhotoKeydown = (evt) => {
+  if (isEscapeKey(evt.key)) {
+    evt.preventDefault();
+    closePhoto();
+  }
+};
+
+const updateCommentShownCount = () => {
+  commentShownCount.textContent = currentComment;
+};
 
 const createComment = ({avatar, name, message}) => {
   const comment = commentTemplate.cloneNode(true);
@@ -30,8 +40,7 @@ const createComment = ({avatar, name, message}) => {
 const renderComments = () => {
   const commentsStep = currentComment + COMMENTS_STEP;
   const renderedComments = comments.slice(currentComment, commentsStep);
-  const renderedCommentsLength = renderedComments.length + currentComment;
-  currentComment = Math.max(commentsStep, currentComment);
+  currentComment += renderedComments.length;
 
   const commentsFragment = document.createDocumentFragment();
 
@@ -42,9 +51,9 @@ const renderComments = () => {
 
   commentsList.append(commentsFragment);
 
-  socialCommentCount.textContent = currentComment;
+  updateCommentShownCount();
 
-  if (renderedCommentsLength >= comments.length) {
+  if (currentComment >= comments.length) {
     commentsLoader.classList.add('hidden');
   }
 };
@@ -54,19 +63,12 @@ const onCommentsLoadClick = () => renderComments();
 const clearComments = () => {
   currentComment = 0;
 
-  commentsList.innerHTML = '';
   commentTotalCounter.textContent = '';
   commentShownCount.textContent = '';
+  commentsList.innerHTML = '';
 
   commentsLoader.classList.add('hidden');
   commentsLoader.removeEventListener('click', onCommentsLoadClick);
-};
-
-const onPhotoKeydown = (evt) => {
-  if (isEscapeKey(evt.key)) {
-    evt.preventDefault();
-    closePhoto();
-  }
 };
 
 const onBigPictureCancel = () => closePhoto();
@@ -93,6 +95,7 @@ export const openBigPicture = (pictureId, picturesDataList) => {
   const currentPhoto = picturesDataList.find((photo) => photo.id === Number(pictureId));
 
   comments = currentPhoto.comments;
+
   bigPictureImg.src = currentPhoto.url;
   likesCounter.textContent = currentPhoto.likes;
   commentShownCount.textContent = currentPhoto.comments.length;
@@ -101,11 +104,12 @@ export const openBigPicture = (pictureId, picturesDataList) => {
   commentsList.innerHTML = '';
 
   renderComments();
+  updateCommentShownCount();
 
   document.addEventListener('keydown', onPhotoKeydown);
   bigPictureCancel.addEventListener('click', onBigPictureCancel);
 
-  if (comments.length > COMMENTS_STEP) {
+  if (comments.length >= COMMENTS_STEP) {
     commentsLoader.classList.remove('hidden');
     commentsLoader.addEventListener('click', onCommentsLoadClick);
   }
