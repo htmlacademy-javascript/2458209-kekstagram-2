@@ -13,7 +13,7 @@ const createPictureEl = (photo) => {
   image.src = photo.url;
   image.alt = photo.description;
   photoSample.querySelector('.picture__likes').textContent = photo.likes;
-  photoSample.querySelector('.picture__comments').textContent = photo.comment;
+  photoSample.querySelector('.picture__comments').textContent = photo.comments.length;
 
   return photoSample;
 };
@@ -48,4 +48,3 @@ pictureSection.addEventListener('click', (evt) => {
     openBigPicture(currentPicture.dataset.pictureId, userPhotos);
   }
 });
-

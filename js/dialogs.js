@@ -1,4 +1,5 @@
 import { isEscapeKey } from './utils.js';
+import { uploadOverlay } from './form.js';
 
 const ALERT_SHOW_TIME = 5000;
 const ERROR_MESSAGE = 'Неизвестная ошибка';
@@ -21,7 +22,7 @@ export const showAlert = (errorMessage = ERROR_MESSAGE) => {
 };
 
 const onDocumentClick = (evt) => {
-  const dialog = evt.target.closest('[data-overlay]') || evt.target.closest('button[type="button"]');
+  const dialog = evt.target.matches('[data-overlay]') || evt.target.closest('button[type="button"]');
 
   if (dialog) {
     closeDialog();
@@ -30,8 +31,10 @@ const onDocumentClick = (evt) => {
 
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt.key)) {
+    uploadOverlay.classList.remove('hidden');
     evt.preventDefault();
     closeDialog();
+
   }
 };
 
@@ -52,7 +55,7 @@ const showDialog = (template) => {
   body.append(currentDialog);
 
   document.addEventListener('click', onDocumentClick);
-  document.addEventListener('keydown', onDocumentKeydown, true);
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 export const showSuccessDialog = () => showDialog(successDialog);
