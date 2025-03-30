@@ -1,8 +1,8 @@
 import './form-scale.js';
-import { initializationSlider, resetEffect } from './form-effects.js';
+import { resetEffect } from './form-effects.js';
 import { isEscapeKey} from './utils.js';
 import { sendData } from './api.js';
-import { showSuccessDialog, showErrorDialog, showAlert } from './dialogs.js';
+import { showSuccessDialogOverlay, showErrorDialogOverlay, showAlert } from './dialogs.js';
 
 const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG = 5;
@@ -16,58 +16,48 @@ const SUBMIT_BUTTON_TEXT = {
 };
 const FILE_TYPES = ['jpg', 'jpeg', 'png', 'webp'];
 const WRONG_FILE_TYPE_MESSAGE = 'Недопустимый формат файла';
-const FILE_NUMBERS = 0;
+const FILE_POSITION = 0;
 
-let pristine = '';
+let pristine = null;
 
 const uploadForm = document.querySelector('.img-upload__form');
-const uploadFile = uploadForm.querySelector('.img-upload__input');
-export const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
+const uploadFileInput = uploadForm.querySelector('.img-upload__input');
+const uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
+const submitButton = uploadOverlay.querySelector('.img-upload__submit');
 const resetBtn = uploadForm.querySelector('.img-upload__cancel');
 const textHashtags = uploadForm.querySelector('.text__hashtags');
 const textComment = uploadForm.querySelector('.text__description');
-const submitButton = document.querySelector('.img-upload__submit');
 const imgUploadPreview = uploadForm.querySelector('.img-upload__preview img');
 const effectsPreview = uploadForm.querySelectorAll('.effects__preview');
 
-const showPreview = (file) => {
-  const newUrl = URL.createObjectURL(file);
-
-  imgUploadPreview.src = newUrl;
-
+const setFormPictures = (image = '') => {
+  imgUploadPreview.src = image;
   effectsPreview.forEach((item) => {
-    item.style.backgroundImage = `url(${newUrl})`;
-  });
-};
-
-const resetPreview = () => {
-  imgUploadPreview.src = '';
-
-  effectsPreview.forEach((item) => {
-    item.style.backgroundImage = '';
+    item.style.backgroundImage = `url(${image})`;
   });
 };
 
 const uploadUserPhoto = () => {
-  const file = uploadFile.files[FILE_NUMBERS];
+  const file = uploadFileInput.files[FILE_POSITION];
   const fileName = file.name.toLowerCase();
   const fileExt = fileName.split('.').pop();
   const matches = FILE_TYPES.includes(fileExt);
+  const newUrl = URL.createObjectURL(file);
 
   if (matches) {
-    showPreview(file);
+    setFormPictures(newUrl);
   } else {
     showAlert(WRONG_FILE_TYPE_MESSAGE);
     closeModalForm();
   }
 };
 
-const onResetBtnCloseClick = () => closeModalForm();
+const onCancelClick = () => closeModalForm();
 
-const isActiveElement = () => document.activeElement === textHashtags || document.activeElement === textComment;
+const isActiveFormElement = () => document.activeElement === textHashtags || document.activeElement === textComment;
 
 const onFormKeyDown = (evt) => {
-  if (isEscapeKey(evt.key) && !isActiveElement()) {
+  if (isEscapeKey(evt.key) && !isActiveFormElement()) {
     evt.preventDefault();
     closeModalForm();
   }
@@ -77,7 +67,7 @@ const isCommentLengthValid = (data) => data.length <= MAX_LENGTH_COMMENT;
 
 const isHashtagsValid = (data) => !data ? true : data.every((tag) => REGULAR_HASHTAG_VALID.test(tag));
 
-const isHashtagsMaxSimbols = (data) => data.length < MAX_SYMBOLS;
+const isHashtagsMaxSymbols = (data) => data.length < MAX_SYMBOLS;
 
 const isHashtagsCountValid = (data) => data.length <= MAX_HASHTAG;
 
@@ -86,29 +76,26 @@ const isHashtagsUnique = (data) => new Set(data).size === data.length;
 const isHashtagsValidatorsValid = () => {
   const pureTags = textHashtags.value.toLowerCase().trim().split(' ').filter(Boolean);
 
-  return isHashtagsValid(pureTags) && isHashtagsCountValid(pureTags) && isHashtagsUnique(pureTags) && isHashtagsMaxSimbols(pureTags);
+  return isHashtagsValid(pureTags) && isHashtagsCountValid(pureTags) && isHashtagsUnique(pureTags) && isHashtagsMaxSymbols(pureTags);
 };
 
-const addValidators = () => {
+pristine = new Pristine(uploadForm, {
+  classTo: 'img-upload__field-wrapper',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextClass: 'img-upload__field-wrapper--error'
+}, false);
 
-  pristine = new Pristine(uploadForm, {
-    classTo: 'img-upload__field-wrapper',
-    errorTextParent: 'img-upload__field-wrapper',
-    errorTextClass: 'img-upload__field-wrapper--error'
-  }, false);
+pristine.addValidator(textComment, isCommentLengthValid, ERR_COMMENT_MESSAGE);
+pristine.addValidator(textHashtags, isHashtagsValidatorsValid, ERR_HASHTAG_MESSAGE);
 
-  pristine.addValidator(textComment, isCommentLengthValid, ERR_COMMENT_MESSAGE);
-  pristine.addValidator(textHashtags, isHashtagsValidatorsValid, ERR_HASHTAG_MESSAGE);
-};
 
 function closeModalForm () {
   document.body.classList.remove('modal-open');
   uploadOverlay.classList.add('hidden');
-  uploadFile.value = '';
-  resetBtn.removeEventListener('click', onResetBtnCloseClick);
+  uploadFileInput.value = '';
+  resetBtn.removeEventListener('click', onCancelClick);
   document.removeEventListener('keydown', onFormKeyDown);
 
-  resetPreview();
   resetEffect();
   uploadForm.reset();
   pristine.reset();
@@ -117,15 +104,13 @@ function closeModalForm () {
 const showModalForm = () => {
   document.body.classList.add('modal-open');
   uploadOverlay.classList.remove('hidden');
-  resetBtn.addEventListener('click', onResetBtnCloseClick);
+  resetBtn.addEventListener('click', onCancelClick);
   document.addEventListener('keydown', onFormKeyDown);
 
-  initializationSlider();
-  addValidators();
   uploadUserPhoto();
 };
 
-const onResetBtnOpenChange = () => showModalForm();
+const onImgUploadInputChange = () => showModalForm();
 
 const toggleSubmitButton = (disabled) => {
   submitButton.disabled = disabled;
@@ -145,10 +130,10 @@ const onSubmitForm = (evt) => {
     sendData(formData)
       .then(() => {
         closeModalForm();
-        showSuccessDialog();
+        showSuccessDialogOverlay();
       })
       .catch(() => {
-        showErrorDialog();
+        showErrorDialogOverlay();
       })
       .finally(() => {
         toggleSubmitButton(false);
@@ -157,4 +142,4 @@ const onSubmitForm = (evt) => {
 };
 
 uploadForm.addEventListener('submit', onSubmitForm);
-uploadFile.addEventListener('change', onResetBtnOpenChange);
+uploadFileInput.addEventListener('change', onImgUploadInputChange);

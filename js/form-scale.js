@@ -2,10 +2,11 @@ const STEP = 25;
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
 
-const scaleControlSmaller = document.querySelector('.scale__control--smaller');
-const scaleControlBigger = document.querySelector('.scale__control--bigger');
-const scaleControlValue = document.querySelector('.scale__control--value');
-const uploadPreviewImg = document.querySelector('.img-upload__preview img');
+const uploadPreviewContainer = document.querySelector('.img-upload__preview-container');
+const scaleControlSmaller = uploadPreviewContainer.querySelector('.scale__control--smaller');
+const scaleControlBigger = uploadPreviewContainer.querySelector('.scale__control--bigger');
+const scaleControlValue = uploadPreviewContainer.querySelector('.scale__control--value');
+const uploadPreviewImg = uploadPreviewContainer.querySelector('.img-upload__preview img');
 
 const getControlValue = () => parseInt(scaleControlValue.value, 10);
 
