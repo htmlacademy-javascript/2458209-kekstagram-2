@@ -50,40 +50,29 @@ const EFFECTS = {
 };
 const DEFAULT_EFFECT_SETTING = EFFECTS.default;
 
-const uploadEffect = document.querySelector('.img-upload__effect-level');
-const slider = document.querySelector('.effect-level__slider');
-const uploadPreviewImg = document.querySelector('.img-upload__preview img');
-const effectValue = document.querySelector('.effect-level__value');
-const effectsList = document.querySelector('.effects__list');
+const uploadWrapperImg = document.querySelector('.img-upload__wrapper');
+const uploadPreviewImg = uploadWrapperImg.querySelector('.img-upload__preview img');
+const effectsList = uploadWrapperImg.querySelector('.effects__list');
+const uploadEffect = uploadWrapperImg.querySelector('.img-upload__effect-level');
+const effectValue = uploadEffect.querySelector('.effect-level__value');
+const slider = uploadEffect.querySelector('.effect-level__slider');
 
 let activeEffectFilter = DEFAULT_EFFECT_SETTING;
 
 const isDefaultEffect = () => activeEffectFilter === DEFAULT_EFFECT_SETTING;
 
-export const initializationSlider = () => {
-  noUiSlider.create(slider, {
-    range: {
-      min: DEFAULT_EFFECT_SETTING.min,
-      max: DEFAULT_EFFECT_SETTING.max,
-    },
-    start: DEFAULT_EFFECT_SETTING.max,
-    step: DEFAULT_EFFECT_SETTING.step,
-    format: {
-      to: function (value) {
-        if (Number.isInteger(value)) {
-          return value.toFixed(0);
-        }
-        return value.toFixed(1);
-      },
-      from: function (value) {
-        return parseFloat(value);
-      },
-    },
-  });
-
-  effectsList.addEventListener('change', onSliderChange);
-  slider.noUiSlider.on('update',onSliderUpdate);
-};
+noUiSlider.create(slider, {
+  range: {
+    min: DEFAULT_EFFECT_SETTING.min,
+    max: DEFAULT_EFFECT_SETTING.max,
+  },
+  start: DEFAULT_EFFECT_SETTING.max,
+  step: DEFAULT_EFFECT_SETTING.step,
+  format: {
+    to: (value) => Number(value),
+    from: (value) => parseFloat(value)
+  },
+});
 
 const updateSlider = () => {
   slider.noUiSlider.updateOptions({
@@ -96,7 +85,15 @@ const updateSlider = () => {
   });
 };
 
-function onSliderChange(evt) {
+export const resetEffect = () => {
+  activeEffectFilter = DEFAULT_EFFECT_SETTING;
+  uploadPreviewImg.className = '';
+  uploadPreviewImg.style.filter = '';
+  effectValue.value = '';
+  uploadEffect.classList.add('hidden');
+};
+
+const onEffectChange = (evt) => {
   const effect = evt.target.value;
   activeEffectFilter = EFFECTS[effect] ?? EFFECTS.default;
   uploadPreviewImg.className = `effects__preview--${activeEffectFilter.name}`;
@@ -108,16 +105,13 @@ function onSliderChange(evt) {
   } else {
     uploadEffect.classList.remove('hidden');
   }
-}
-
-export const resetEffect = () => {
-  activeEffectFilter = DEFAULT_EFFECT_SETTING;
-  effectsList.removeEventListener('change', onSliderChange);
-  slider.noUiSlider.destroy();
 };
 
-function onSliderUpdate () {
+const onSliderUpdate = () => {
   const sliderValue = slider.noUiSlider.get();
   uploadPreviewImg.style.filter = isDefaultEffect() ? DEFAULT_EFFECT_SETTING.style : `${activeEffectFilter.style}(${sliderValue}${activeEffectFilter.unit})`;
   effectValue.value = sliderValue;
-}
+};
+
+effectsList.addEventListener('change', onEffectChange);
+slider.noUiSlider.on('update',onSliderUpdate);

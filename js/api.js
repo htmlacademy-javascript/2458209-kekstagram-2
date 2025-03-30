@@ -18,10 +18,7 @@ const loadingData = (route, errorText, method = METHODS.GET, body = null) =>
       if (response.ok) {
         return response.json();
       }
-      throw new Error(`${response.status}: ${response.statusText}`);
-    })
-    .catch(() => {
-      throw new Error(errorText);
+      throw new Error();
     });
 
 export const getData = () => loadingData(ROUTE.GET_DATA, TEXT_ERROR.GET_DATA);

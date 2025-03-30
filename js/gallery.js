@@ -14,13 +14,16 @@ const createPictureEl = (photo) => {
   image.alt = photo.description;
   photoSample.querySelector('.picture__likes').textContent = photo.likes;
   photoSample.querySelector('.picture__comments').textContent = photo.comments.length;
+  photoSample.dataset.id = photo.id;
 
   return photoSample;
 };
 
-export const clearPhotos = () => pictureSection.querySelectorAll('.picture').forEach((item) => {
-  item.remove();
-});
+export const clearPhotos = () => {
+  pictureSection.querySelectorAll('.picture').forEach((item) => {
+    item.remove();
+  });
+};
 
 export const renderGallery = (photos) => {
   const fragment = document.createDocumentFragment();
@@ -44,7 +47,15 @@ export const getUserPhotos = () => userPhotos;
 pictureSection.addEventListener('click', (evt) => {
   const currentPicture = evt.target.closest('.picture[data-picture-id]');
 
-  if (currentPicture) {
-    openBigPicture(currentPicture.dataset.pictureId, userPhotos);
+  if (!currentPicture) {
+    return;
   }
+
+  const picture = userPhotos.find((photo) => photo.id === +currentPicture.dataset.id);
+
+  if (!picture) {
+    return;
+  }
+
+  openBigPicture(picture);
 });
