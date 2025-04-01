@@ -2,7 +2,7 @@ import './form-scale.js';
 import { resetEffect } from './form-effects.js';
 import { isEscapeKey} from './utils.js';
 import { sendData } from './api.js';
-import { showSuccessDialogOverlay, showErrorDialogOverlay, showAlert } from './dialogs.js';
+import { showSuccessDialogForm, showErrorDialogForm, showAlert } from './dialogs.js';
 
 const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG = 5;
@@ -17,8 +17,6 @@ const SUBMIT_BUTTON_TEXT = {
 const FILE_TYPES = ['jpg', 'jpeg', 'png', 'webp'];
 const WRONG_FILE_TYPE_MESSAGE = 'Недопустимый формат файла';
 const FILE_POSITION = 0;
-
-let pristine = null;
 
 const uploadForm = document.querySelector('.img-upload__form');
 const uploadFileInput = uploadForm.querySelector('.img-upload__input');
@@ -79,7 +77,7 @@ const isHashtagsValidatorsValid = () => {
   return isHashtagsValid(pureTags) && isHashtagsCountValid(pureTags) && isHashtagsUnique(pureTags) && isHashtagsMaxSymbols(pureTags);
 };
 
-pristine = new Pristine(uploadForm, {
+const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper--error'
@@ -130,10 +128,10 @@ const onSubmitForm = (evt) => {
     sendData(formData)
       .then(() => {
         closeModalForm();
-        showSuccessDialogOverlay();
+        showSuccessDialogForm();
       })
       .catch(() => {
-        showErrorDialogOverlay();
+        showErrorDialogForm();
       })
       .finally(() => {
         toggleSubmitButton(false);
