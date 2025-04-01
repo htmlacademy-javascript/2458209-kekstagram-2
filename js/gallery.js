@@ -45,13 +45,13 @@ export const initGallery = (photos) => {
 export const getUserPhotos = () => userPhotos;
 
 pictureSection.addEventListener('click', (evt) => {
-  const currentPicture = evt.target.closest('.picture[data-picture-id]');
+  const currentPictureElement = evt.target.closest('.picture[data-picture-id]');
 
-  if (!currentPicture) {
+  if (!currentPictureElement) {
     return;
   }
 
-  const picture = userPhotos.find((photo) => photo.id === +currentPicture.dataset.id);
+  const picture = userPhotos.find((photo) => photo.id === +currentPictureElement.dataset.id);
 
   if (!picture) {
     return;

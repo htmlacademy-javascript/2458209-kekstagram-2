@@ -94,6 +94,8 @@ export const resetEffect = () => {
 };
 
 const onEffectChange = (evt) => {
+  resetEffect();
+
   const effect = evt.target.value;
   activeEffectFilter = EFFECTS[effect] ?? EFFECTS.default;
   uploadPreviewImg.className = `effects__preview--${activeEffectFilter.name}`;
@@ -109,7 +111,7 @@ const onEffectChange = (evt) => {
 
 const onSliderUpdate = () => {
   const sliderValue = slider.noUiSlider.get();
-  uploadPreviewImg.style.filter = isDefaultEffect() ? DEFAULT_EFFECT_SETTING.style : `${activeEffectFilter.style}(${sliderValue}${activeEffectFilter.unit})`;
+  uploadPreviewImg.style.filter = `${activeEffectFilter.style}(${sliderValue}${activeEffectFilter.unit})`;
   effectValue.value = sliderValue;
 };
 

@@ -55,7 +55,7 @@ const onFilterClick = (evt) => {
   debounceFilter();
 };
 
-export const initFilter = () => {
+export const initFilters = () => {
   imgFilters.classList.remove(INACTIVE_FILTER_LIST_CLASS);
   imgFilters.addEventListener('click', onFilterClick);
 };

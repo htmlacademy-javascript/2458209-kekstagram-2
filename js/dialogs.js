@@ -21,6 +21,7 @@ export const showAlert = (errorMessage = ERROR_MESSAGE) => {
 
 const onDocumentClick = (evt) => {
   const isCloseDialogElement = evt.target.matches('[data-overlay]') || evt.target.closest('button[type="button"]');
+
   if (isCloseDialogElement) {
     closeDialog();
   }
@@ -53,5 +54,6 @@ const showDialog = (template) => {
   document.addEventListener('keydown', onDocumentKeydown, true);
 };
 
-export const showSuccessDialogOverlay = () => showDialog(successDialog);
-export const showErrorDialogOverlay = () => showDialog(errorDialog);
+export const showSuccessDialogForm = () => showDialog(successDialog);
+
+export const showErrorDialogForm = () => showDialog(errorDialog);
