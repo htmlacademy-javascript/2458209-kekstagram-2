@@ -28,5 +28,7 @@ const onScaleDownClick = () => {
   scaleImage(MIN_CONTROL_SCALE);
 };
 
+export const resetScale = () => scaleImage(MAX_SCALE);
+
 scaleControlBigger.addEventListener('click', onScaleUpClick);
 scaleControlSmaller.addEventListener('click', onScaleDownClick);

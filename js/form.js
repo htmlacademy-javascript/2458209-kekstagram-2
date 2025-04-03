@@ -1,5 +1,6 @@
 import './form-scale.js';
 import { resetEffect } from './form-effects.js';
+import { resetScale } from './form-scale.js';
 import { isEscapeKey} from './utils.js';
 import { sendData } from './api.js';
 import { showSuccessDialogForm, showErrorDialogForm, showAlert } from './dialogs.js';
@@ -8,7 +9,7 @@ const REGULAR_HASHTAG_VALID = /^#[a-zа-яё0-9]{1,19}$/i;
 const MAX_HASHTAG = 5;
 const MAX_SYMBOLS = 20;
 const MAX_LENGTH_COMMENT = 140;
-const ERR_COMMENT_MESSAGE = 'Длина комментария не более 140 символов';
+const ERR_COMMENT_MESSAGE = `Длина комментария не более ${MAX_LENGTH_COMMENT} символов`;
 const ERR_HASHTAG_MESSAGE = 'Хэштег введен не правильно';
 const SUBMIT_BUTTON_TEXT = {
   IDLE:'Опубликовать',
@@ -95,6 +96,7 @@ function closeModalForm () {
   document.removeEventListener('keydown', onFormKeyDown);
 
   resetEffect();
+  resetScale();
   uploadForm.reset();
   pristine.reset();
 }
